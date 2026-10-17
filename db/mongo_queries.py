@@ -6,7 +6,8 @@ from dotenv import load_dotenv
 load_dotenv()
 
 def get_mongo_client():
-    return MongoClient(os.environ.get("MONGO_URI"))
+    uri = os.environ.get("MONGO_URI") or "mongodb://localhost:27017/"
+    return MongoClient(uri)
 
 # Check mongo connection
 def check_connection():
@@ -72,3 +73,18 @@ def get_sample_products(limit=5):
     client = get_mongo_client()
     db = client["shop"]
     return list(db.products.find({}, {"_id": 0}).limit(limit))
+
+# Store raw image bytes for a product (as binary in the document)
+def store_product_image(product_id, image_bytes, mime_type="image/jpeg"):
+    client = get_mongo_client()
+    db = client["shop"]
+    db.products.update_one(
+        {"product_id": product_id},
+        {"$set": {"image_data": image_bytes, "image_mime": mime_type}}
+    )
+
+# Get stored image bytes for a product
+def get_product_image_data(product_id):
+    client = get_mongo_client()
+    db = client["shop"]
+    return db.products.find_one({"product_id": product_id}, {"_id": 0, "image_data": 1, "image_mime": 1})

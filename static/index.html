@@ -1,0 +1,1100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NEXUS ELECTRONICS — High-Performance Precision Hardware</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            primary: "#0650cc",
+            "primary-hover": "#043e9e",
+            "primary-light": "#eef2ff",
+            surface: "#fbf9f9",
+            "surface-low": "#f5f3f3",
+            "surface-card": "#ffffff",
+            "on-surface": "#111827",
+            "on-surface-subtle": "#5f5e5e",
+            border: "#e5e7eb",
+          },
+          fontFamily: {
+            sans: ["Inter", "-apple-system", "BlinkMacSystemFont", "sans-serif"],
+          }
+        }
+      }
+    };
+  </script>
+  <style>
+    body { font-family: 'Inter', sans-serif; background-color: #fbf9f9; color: #111827; }
+    .card-shadow { box-shadow: 0 1px 3px rgba(0,0,0,0.04); transition: transform 0.2s ease, box-shadow 0.2s ease; }
+    .card-shadow:hover { transform: translateY(-3px); box-shadow: 0 10px 25px rgba(0,0,0,0.08); }
+    .touch-target { min-height: 44px; min-width: 44px; }
+  </style>
+</head>
+<body class="bg-surface antialiased min-h-screen flex flex-col">
+
+  <!-- Top Announcement Bar -->
+  <div class="bg-surface-low border-b border-border py-2 px-4 text-xs font-medium text-on-surface-subtle">
+    <div class="max-w-7xl mx-auto flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <span class="w-2 h-2 rounded-full bg-primary inline-block"></span>
+        <strong class="text-on-surface uppercase tracking-wider">SPRING HARDWARE RELEASE 2025</strong>
+        <span class="text-gray-300">/</span>
+        <span>Free expedited courier dispatch on all domestic orders over $150</span>
+      </div>
+      <div class="hidden md:flex items-center gap-4 text-gray-500">
+        <span>🐘 Postgres ACID</span>
+        <span>•</span>
+        <span>🍃 Mongo Catalog</span>
+        <span>•</span>
+        <span>🔮 ChromaDB Vectors</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Header -->
+  <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-border">
+    <div class="max-w-7xl mx-auto px-4 h-20 flex items-center justify-between gap-6">
+      <a href="#" onclick="filterCategory('All')" class="flex items-baseline gap-1.5 flex-shrink-0">
+        <span class="text-2xl font-extrabold tracking-tight text-on-surface uppercase">NEXUS</span>
+        <span class="text-[10px] font-bold text-primary tracking-widest uppercase">ELECTRONICS</span>
+      </a>
+
+      <!-- Search Input -->
+      <div class="flex-1 max-w-xl relative hidden sm:block">
+        <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xl pointer-events-none">search</span>
+        <input id="searchInput" type="text" placeholder="Search laptops, smartphones, footwear, books..." 
+               class="w-full h-11 pl-10 pr-4 bg-surface-low border border-border rounded-lg text-sm text-on-surface placeholder:text-gray-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
+               oninput="handleSearch(this.value)">
+      </div>
+
+      <!-- Actions -->
+      <div class="flex items-center gap-3">
+        <!-- User Profile Pill -->
+        <button onclick="openProfileModal()" id="userBtn" class="flex items-center gap-2 bg-surface-low hover:bg-gray-200 border border-border rounded-lg px-3 py-2 text-xs font-semibold transition-colors">
+          <span class="material-symbols-outlined text-primary text-base">account_circle</span>
+          <span id="userNameHeader">Demo User</span>
+        </button>
+
+        <!-- Streamlit App Shortcut -->
+        <a href="http://localhost:8501" target="_blank" class="hidden lg:flex items-center gap-1.5 px-3 py-2 text-xs font-semibold text-gray-600 bg-surface-low hover:bg-gray-200 border border-border rounded-lg transition-colors">
+          <span>Streamlit UI</span>
+          <span class="material-symbols-outlined text-sm">open_in_new</span>
+        </a>
+
+        <!-- Cart Trigger -->
+        <button onclick="openCartDrawer()" class="relative h-11 px-4 bg-primary hover:bg-primary-hover text-white rounded-lg font-semibold text-sm flex items-center gap-2 shadow-sm transition-all active:scale-[0.98]">
+          <span class="material-symbols-outlined text-xl">shopping_bag</span>
+          <span class="hidden sm:inline">Cart</span>
+          <span id="cartBadgeCount" class="w-5 h-5 rounded-full bg-white text-primary text-xs font-bold flex items-center justify-center">0</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 py-8">
+    
+    <!-- Hero Banner -->
+    <div class="relative overflow-hidden rounded-2xl bg-gradient-to-r from-slate-900 to-slate-800 p-8 md:p-10 text-white mb-8 shadow-xl">
+      <div class="relative z-10 max-w-2xl">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md text-blue-300 text-xs font-semibold uppercase tracking-wider mb-3">
+          <span class="w-1.5 h-1.5 rounded-full bg-blue-400"></span>
+          Nexus Precision Engineering
+        </div>
+        <h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight text-white mb-3 leading-tight">
+          Technology for everyday life.
+        </h1>
+        <p class="text-slate-300 text-sm sm:text-base leading-relaxed mb-6">
+          Engineered for seamless productivity and all-day endurance. Powered by PostgreSQL ACID transactions for guaranteed stock, MongoDB flexible catalog, and ChromaDB semantic similarity.
+        </p>
+        <div class="flex flex-wrap items-center gap-6 pt-4 border-t border-white/10 text-xs text-slate-400">
+          <div><strong class="text-white block text-sm font-bold">100% CNC</strong> Aerospace Tolerance</div>
+          <div class="w-px h-6 bg-white/15"></div>
+          <div><strong class="text-white block text-sm font-bold">Zero Overselling</strong> PostgreSQL ACID</div>
+          <div class="w-px h-6 bg-white/15"></div>
+          <div><strong class="text-white block text-sm font-bold">Semantic Search</strong> ChromaDB 384-dim</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Category Tabs -->
+    <div class="flex items-center justify-between gap-4 overflow-x-auto pb-4 mb-6 border-b border-border">
+      <div class="flex items-center gap-2" id="categoryTabs">
+        <button onclick="filterCategory('All')" class="cat-pill active-pill px-4 py-2.5 rounded-lg text-sm font-semibold transition-all flex items-center gap-1.5 bg-primary text-white" data-cat="All">
+          <span>🌐 All Products</span>
+          <span class="text-xs bg-white/20 px-1.5 py-0.5 rounded-full">100</span>
+        </button>
+        <button onclick="filterCategory('laptops')" class="cat-pill px-4 py-2.5 rounded-lg text-sm font-medium transition-all flex items-center gap-1.5 bg-white text-gray-700 hover:bg-gray-100 border border-border" data-cat="laptops">
+          <span>💻 Laptops</span>
+          <span class="text-xs bg-gray-100 text-gray-600 px-1.5 py-0.5 rounded-full">25</span>
+        </button>
+        <button onclick="filterCategory('phones')" class="cat-pill px-4 py-2.5 rounded-lg text-sm font-medium transition-all flex items-center gap-1.5 bg-white text-gray-700 hover:bg-gray-100 border border-border" data-cat="phones">
+          <span>📱 Smartphones</span>
+          <span class="text-xs bg-gray-100 text-gray-600 px-1.5 py-0.5 rounded-full">25</span>
+        </button>
+        <button onclick="filterCategory('shoes')" class="cat-pill px-4 py-2.5 rounded-lg text-sm font-medium transition-all flex items-center gap-1.5 bg-white text-gray-700 hover:bg-gray-100 border border-border" data-cat="shoes">
+          <span>👟 Footwear</span>
+          <span class="text-xs bg-gray-100 text-gray-600 px-1.5 py-0.5 rounded-full">25</span>
+        </button>
+        <button onclick="filterCategory('books')" class="cat-pill px-4 py-2.5 rounded-lg text-sm font-medium transition-all flex items-center gap-1.5 bg-white text-gray-700 hover:bg-gray-100 border border-border" data-cat="books">
+          <span>📚 Technical Books</span>
+          <span class="text-xs bg-gray-100 text-gray-600 px-1.5 py-0.5 rounded-full">25</span>
+        </button>
+      </div>
+      <div id="productCountLabel" class="text-xs text-gray-500 flex-shrink-0 font-medium">
+        Loading catalog...
+      </div>
+    </div>
+
+    <!-- Product Grid -->
+    <div id="productGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"></div>
+  </main>
+
+  <!-- Product Details Modal -->
+  <div id="detailModal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto p-6 md:p-8 shadow-2xl relative">
+      <button onclick="closeDetailModal()" class="absolute top-5 right-5 w-9 h-9 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center text-gray-600">
+        <span class="material-symbols-outlined text-xl">close</span>
+      </button>
+      <div id="detailModalContent" class="space-y-6"></div>
+    </div>
+  </div>
+
+  <!-- User Profile & Address Manager Modal -->
+  <div id="profileModal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-6 md:p-8 shadow-2xl relative">
+      <button onclick="closeProfileModal()" class="absolute top-5 right-5 w-9 h-9 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center text-gray-600">
+        <span class="material-symbols-outlined text-xl">close</span>
+      </button>
+      
+      <div class="border-b border-border pb-4 mb-4 flex items-center justify-between">
+        <div>
+          <h2 class="text-xl font-bold text-on-surface">Customer Profile & Addresses</h2>
+          <span class="text-xs text-gray-500">Manage account credentials, shipping destinations, and view order history</span>
+        </div>
+        <button onclick="logoutUser()" class="text-xs font-bold text-red-600 hover:underline">Sign Out</button>
+      </div>
+
+      <!-- Profile Form -->
+      <div class="bg-surface-low rounded-xl p-4 border border-border mb-6">
+        <h4 class="text-xs font-bold uppercase tracking-wider text-gray-500 mb-2">Profile Information</h4>
+        <div class="grid grid-cols-2 gap-3 mb-3">
+          <div>
+            <label class="text-xs font-semibold text-gray-600">Name</label>
+            <input id="profNameInput" type="text" class="w-full h-9 px-3 bg-white border border-border rounded text-sm font-medium">
+          </div>
+          <div>
+            <label class="text-xs font-semibold text-gray-600">Email</label>
+            <input id="profEmailInput" type="text" class="w-full h-9 px-3 bg-white border border-border rounded text-sm font-medium">
+          </div>
+        </div>
+        <button onclick="updateProfile()" class="h-9 px-4 bg-primary text-white text-xs font-bold rounded-lg hover:bg-primary-hover">Save Profile Changes</button>
+      </div>
+
+      <!-- Address Manager -->
+      <div class="mb-6">
+        <div class="flex items-center justify-between mb-2">
+          <h4 class="text-xs font-bold uppercase tracking-wider text-gray-500">Saved Addresses</h4>
+          <button onclick="toggleNewAddressForm()" class="text-xs font-bold text-primary hover:underline">+ Add Address</button>
+        </div>
+        <div id="profileAddressList" class="space-y-2">
+          <!-- Populated dynamically -->
+        </div>
+
+        <!-- Add Address Inline Form -->
+        <div id="newAddressForm" class="hidden bg-surface-low p-4 rounded-xl border border-border mt-3 space-y-2.5 text-xs">
+          <h5 class="font-bold text-gray-700">Add New Shipping Destination</h5>
+          <div class="grid grid-cols-2 gap-2">
+            <input id="newAddrLabel" placeholder="Label (e.g. Home, Office)" class="h-8 px-2.5 bg-white border border-border rounded">
+            <input id="newAddrName" placeholder="Recipient Name" class="h-8 px-2.5 bg-white border border-border rounded">
+            <input id="newAddrStreet" placeholder="Street Address" class="col-span-2 h-8 px-2.5 bg-white border border-border rounded">
+            <input id="newAddrCity" placeholder="City" class="h-8 px-2.5 bg-white border border-border rounded">
+            <div class="flex gap-2">
+              <input id="newAddrState" placeholder="State" class="w-1/2 h-8 px-2.5 bg-white border border-border rounded">
+              <input id="newAddrZip" placeholder="ZIP Code" class="w-1/2 h-8 px-2.5 bg-white border border-border rounded">
+            </div>
+          </div>
+          <div class="flex justify-end gap-2 pt-1">
+            <button onclick="toggleNewAddressForm()" class="px-3 py-1.5 bg-gray-200 text-gray-700 rounded font-semibold">Cancel</button>
+            <button onclick="saveNewAddress()" class="px-3 py-1.5 bg-primary text-white rounded font-bold">Save Address</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Order History Section -->
+      <div>
+        <h4 class="text-xs font-bold uppercase tracking-wider text-gray-500 mb-2">Your Past Orders</h4>
+        <div id="profileOrderList" class="space-y-2">
+          <!-- Populated dynamically -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sign In / Register Modal -->
+  <div id="authModal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl relative">
+      <button onclick="closeAuthModal()" class="absolute top-5 right-5 w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-600 hover:bg-gray-200 transition-colors">
+        <span class="material-symbols-outlined text-lg">close</span>
+      </button>
+
+      <!-- Auth Tabs Header -->
+      <div class="flex border-b border-border mb-5">
+        <button id="tabSignInBtn" onclick="switchAuthTab('login')" class="flex-1 pb-2.5 text-xs font-bold border-b-2 border-primary text-primary transition-all">
+          🔑 Sign In
+        </button>
+        <button id="tabRegisterBtn" onclick="switchAuthTab('register')" class="flex-1 pb-2.5 text-xs font-bold border-b-2 border-transparent text-gray-500 hover:text-gray-800 transition-all">
+          📝 Create Account
+        </button>
+      </div>
+
+      <!-- SECTION 1: SIGN IN -->
+      <div id="authSignInSection">
+        <h3 class="text-xl font-bold text-on-surface mb-1">Customer Sign In</h3>
+        <p class="text-xs text-gray-500 mb-4">Sign in to your Nexus account to access orders and addresses</p>
+
+        <!-- 1-Click Demo Shortcut -->
+        <button onclick="quickDemoLogin()" class="w-full h-11 bg-blue-50 border border-blue-200 hover:bg-blue-100 text-blue-700 rounded-lg font-bold text-xs flex items-center justify-center gap-1.5 mb-4 transition-all">
+          <span>⚡ 1-Click Quick Login as Demo User</span>
+        </button>
+
+        <div class="text-center text-xs text-gray-400 mb-4 font-semibold uppercase tracking-wider">or sign in with email</div>
+
+        <form onsubmit="event.preventDefault(); loginUser();" class="space-y-3">
+          <div>
+            <label class="block text-[11px] font-bold text-gray-600 mb-1">Email Address</label>
+            <input id="authEmail" type="email" required placeholder="demo@nexus.com" class="w-full h-10 px-3 bg-surface-low border border-border rounded-lg text-xs focus:bg-white focus:outline-none focus:border-primary">
+          </div>
+          <div>
+            <label class="block text-[11px] font-bold text-gray-600 mb-1">Password</label>
+            <input id="authPassword" type="password" required placeholder="••••••••" class="w-full h-10 px-3 bg-surface-low border border-border rounded-lg text-xs focus:bg-white focus:outline-none focus:border-primary">
+          </div>
+          <button type="submit" class="w-full h-11 bg-primary text-white font-bold text-xs rounded-lg hover:bg-primary-hover shadow-md transition-colors mt-2">
+            Sign In to Account
+          </button>
+        </form>
+
+        <div class="border-t border-border mt-4 pt-3 text-center text-xs text-gray-500">
+          New to Nexus? <button onclick="switchAuthTab('register')" class="text-primary font-bold hover:underline">Create an account</button>
+        </div>
+      </div>
+
+      <!-- SECTION 2: CREATE NEW ACCOUNT -->
+      <div id="authRegisterSection" class="hidden">
+        <h3 class="text-xl font-bold text-on-surface mb-1">Create Account</h3>
+        <p class="text-xs text-gray-500 mb-4">Join Nexus for express checkout and order tracking</p>
+
+        <form onsubmit="event.preventDefault(); registerUser();" class="space-y-3">
+          <div>
+            <label class="block text-[11px] font-bold text-gray-600 mb-1">Full Name</label>
+            <input id="regName" type="text" required placeholder="e.g. Alex Mercer" class="w-full h-10 px-3 bg-surface-low border border-border rounded-lg text-xs focus:bg-white focus:outline-none focus:border-primary">
+          </div>
+          <div>
+            <label class="block text-[11px] font-bold text-gray-600 mb-1">Email Address</label>
+            <input id="regEmail" type="email" required placeholder="e.g. alex@nexus.com" class="w-full h-10 px-3 bg-surface-low border border-border rounded-lg text-xs focus:bg-white focus:outline-none focus:border-primary">
+          </div>
+          <div>
+            <label class="block text-[11px] font-bold text-gray-600 mb-1">Password</label>
+            <input id="regPassword" type="password" required placeholder="Choose a password" class="w-full h-10 px-3 bg-surface-low border border-border rounded-lg text-xs focus:bg-white focus:outline-none focus:border-primary">
+          </div>
+          <button type="submit" class="w-full h-11 bg-primary text-white font-bold text-xs rounded-lg hover:bg-primary-hover shadow-md transition-colors mt-2">
+            Create Nexus Account
+          </button>
+        </form>
+
+        <div class="border-t border-border mt-4 pt-3 text-center text-xs text-gray-500">
+          Already have an account? <button onclick="switchAuthTab('login')" class="text-primary font-bold hover:underline">Sign In here</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Multi-Step Cart & Checkout Drawer -->
+  <div id="cartDrawer" class="fixed inset-0 z-50 overflow-hidden hidden">
+    <div class="absolute inset-0 bg-black/50 backdrop-blur-sm" onclick="closeCartDrawer()"></div>
+    <div class="fixed inset-y-0 right-0 max-w-lg w-full bg-white shadow-2xl flex flex-col z-50">
+      
+      <!-- Drawer Header -->
+      <div class="p-5 border-b border-border flex items-center justify-between">
+        <div>
+          <h2 id="checkoutTitle" class="text-lg font-bold text-on-surface">Shopping Cart & Checkout</h2>
+          <span id="checkoutStepLabel" class="text-xs text-gray-500">Step 1: Review Items</span>
+        </div>
+        <button onclick="closeCartDrawer()" class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-600">
+          <span class="material-symbols-outlined text-lg">close</span>
+        </button>
+      </div>
+
+      <!-- Drawer Body (Switches between Step 1, 2, 3) -->
+      <div id="drawerBody" class="flex-1 overflow-y-auto p-5">
+        <!-- Rendered by JS -->
+      </div>
+
+      <!-- Drawer Footer -->
+      <div id="drawerFooter" class="p-5 border-t border-border bg-surface-low/50">
+        <!-- Rendered by JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div id="toastContainer" class="fixed bottom-6 right-6 z-50 space-y-2 pointer-events-none"></div>
+
+  <!-- Application Script -->
+  <script>
+    const API_BASE = "";
+    let allProducts = [];
+    let currentCategory = "All";
+    let cart = {}; // { pid: qty }
+    let currentUser = null;
+    let userAddresses = [];
+    let selectedAddressId = null;
+    let selectedPaymentMethod = "Credit Card (Nexus Pay)";
+    let currentCheckoutStep = 1;
+
+    async function init() {
+      await loadSessionUser();
+      await loadProducts();
+      updateCartBadge();
+    }
+
+    async function loadSessionUser() {
+      try {
+        const stored = localStorage.getItem("nexus_user");
+        if (stored) {
+          const parsed = JSON.parse(stored);
+          const res = await fetch(`${API_BASE}/users/${parsed.id}`);
+          if (res.ok) {
+            currentUser = await res.json();
+            document.getElementById("userNameHeader").textContent = currentUser.name;
+            await loadUserAddresses();
+            return;
+          }
+        }
+
+        // If explicitly logged out
+        if (localStorage.getItem("nexus_logged_out") === "true") {
+          currentUser = null;
+          document.getElementById("userNameHeader").textContent = "Sign In / Register";
+          userAddresses = [];
+          return;
+        }
+
+        // Default to Demo User 1 on first session
+        const res = await fetch(`${API_BASE}/users/1`);
+        if (res.ok) {
+          currentUser = await res.json();
+          document.getElementById("userNameHeader").textContent = currentUser.name;
+          await loadUserAddresses();
+        }
+      } catch (e) {
+        console.error("Failed to load user", e);
+      }
+    }
+
+    async function loadUserAddresses() {
+      if (!currentUser) {
+        userAddresses = [];
+        selectedAddressId = null;
+        return;
+      }
+      try {
+        const res = await fetch(`${API_BASE}/users/${currentUser.id}/addresses`);
+        userAddresses = await res.json();
+        const def = userAddresses.find(a => a.is_default) || userAddresses[0];
+        if (def) selectedAddressId = def.id;
+      } catch (e) {
+        console.error("Failed to load addresses", e);
+      }
+    }
+
+    async function loadProducts(query = "") {
+      try {
+        let url = `${API_BASE}/products`;
+        const params = [];
+        if (currentCategory !== "All") params.push(`category=${encodeURIComponent(currentCategory)}`);
+        if (query) params.push(`q=${encodeURIComponent(query)}`);
+        if (params.length) url += `?${params.join("&")}`;
+
+        const res = await fetch(url);
+        allProducts = await res.json();
+        renderProducts(allProducts);
+      } catch (e) {
+        console.error("Failed to load products", e);
+      }
+    }
+
+    function renderProducts(products) {
+      const grid = document.getElementById("productGrid");
+      document.getElementById("productCountLabel").textContent = `Showing ${products.length} precision products`;
+
+      grid.innerHTML = products.map(p => `
+        <div class="nexus-card card-shadow bg-white border border-border rounded-xl p-4 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-[11px] font-bold uppercase tracking-wider text-primary bg-primary-light px-2.5 py-0.5 rounded-md">${p.category}</span>
+              <span class="text-xs font-semibold text-gray-400 font-mono">${p.product_id}</span>
+            </div>
+            <div class="w-full aspect-[4/3] rounded-lg overflow-hidden bg-surface-low mb-3 flex items-center justify-center cursor-pointer" onclick="openProductDetail('${p.product_id}')">
+              <img src="${API_BASE}/products/${p.product_id}/image" alt="${p.name}" class="w-full h-full object-contain hover:scale-105 transition-transform duration-300">
+            </div>
+            <h3 class="font-bold text-base text-on-surface line-clamp-1 hover:text-primary transition-colors cursor-pointer" onclick="openProductDetail('${p.product_id}')">${p.name}</h3>
+            <p class="text-xs text-gray-500 line-clamp-2 mt-1 mb-3">${p.description}</p>
+          </div>
+          <div class="pt-3 border-t border-border flex items-center justify-between mt-auto">
+            <span class="text-lg font-extrabold text-primary">$${Number(p.price).toLocaleString('en-US', {minimumFractionDigits: 2})}</span>
+            <div class="flex items-center gap-1.5">
+              <button onclick="openProductDetail('${p.product_id}')" class="h-9 px-3 text-xs font-semibold text-gray-700 bg-surface-low hover:bg-gray-200 rounded-lg transition-colors">Details</button>
+              <button onclick="addToCart('${p.product_id}', '${p.name.replace(/'/g, "\\'")}')" class="h-9 px-3 text-xs font-bold text-white bg-primary hover:bg-primary-hover rounded-lg transition-colors flex items-center gap-1">Add 🛒</button>
+            </div>
+          </div>
+        </div>
+      `).join("");
+    }
+
+    function filterCategory(cat) {
+      currentCategory = cat;
+      document.querySelectorAll(".cat-pill").forEach(btn => {
+        btn.className = (btn.dataset.cat === cat)
+          ? "cat-pill active-pill px-4 py-2.5 rounded-lg text-sm font-semibold transition-all flex items-center gap-1.5 bg-primary text-white"
+          : "cat-pill px-4 py-2.5 rounded-lg text-sm font-medium transition-all flex items-center gap-1.5 bg-white text-gray-700 hover:bg-gray-100 border border-border";
+      });
+      loadProducts(document.getElementById("searchInput").value);
+    }
+
+    let searchTimer = null;
+    function handleSearch(q) {
+      clearTimeout(searchTimer);
+      searchTimer = setTimeout(() => loadProducts(q), 250);
+    }
+
+    // Detail Modal
+    async function openProductDetail(pid) {
+      const prod = await (await fetch(`${API_BASE}/products/${pid}`)).json();
+      const similar = await (await fetch(`${API_BASE}/products/${pid}/similar`)).json();
+      const modal = document.getElementById("detailModal");
+      const content = document.getElementById("detailModalContent");
+
+      const attrsHtml = Object.entries(prod.attributes || {}).map(([k, v]) => `
+        <div class="bg-surface-low border border-border rounded-lg p-2.5 text-center">
+          <div class="text-[10px] uppercase font-bold text-gray-500">${k}</div>
+          <div class="text-sm font-extrabold text-on-surface mt-0.5">${v}</div>
+        </div>
+      `).join("");
+
+      const similarHtml = (similar && similar.length) ? `
+        <div class="mt-6 border-t border-border pt-5 col-span-1 md:col-span-2">
+          <div class="text-xs font-bold uppercase tracking-wider text-gray-500 mb-3 flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-sm text-primary">hub</span>
+            <span>Semantically Similar Products (ChromaDB AI Similarity)</span>
+          </div>
+          <div class="grid grid-cols-2 sm:grid-cols-5 gap-3">
+            ${similar.map(s => `
+              <div onclick="openProductDetail('${s.product_id}')" class="p-2.5 bg-surface-low hover:bg-gray-100 rounded-xl border border-border cursor-pointer transition-all flex flex-col justify-between group">
+                <div class="aspect-square bg-white rounded p-1 mb-2 flex items-center justify-center overflow-hidden">
+                  <img src="${API_BASE}/products/${s.product_id}/image" class="w-full h-full object-contain group-hover:scale-105 transition-transform">
+                </div>
+                <div class="text-[11px] font-bold text-on-surface line-clamp-1">${s.name}</div>
+                <div class="text-xs font-extrabold text-primary mt-1">$${Number(s.price).toFixed(2)}</div>
+              </div>
+            `).join("")}
+          </div>
+        </div>
+      ` : "";
+
+      content.innerHTML = `
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
+          <div class="aspect-[4/3] bg-surface-low rounded-xl p-2 border border-border flex items-center justify-center">
+            <img src="${API_BASE}/products/${prod.product_id}/image" class="w-full h-full object-contain">
+          </div>
+          <div>
+            <div class="flex items-center gap-2 mb-2">
+              <span class="text-xs font-bold uppercase tracking-wider text-primary bg-primary-light px-2.5 py-0.5 rounded-md">${prod.category}</span>
+              <span class="text-xs font-bold ${prod.stock > 0 ? 'text-emerald-700 bg-emerald-50' : 'text-red-700 bg-red-50'} px-2.5 py-0.5 rounded-md">
+                ${prod.stock > 0 ? `● In Stock (${prod.stock} units)` : 'Out of stock'}
+              </span>
+            </div>
+            <h2 class="text-2xl font-extrabold text-on-surface mb-2">${prod.name}</h2>
+            <div class="text-2xl font-extrabold text-primary mb-3">$${Number(prod.price).toFixed(2)}</div>
+            <p class="text-xs text-gray-600 leading-relaxed mb-4">${prod.description}</p>
+            <div class="grid grid-cols-2 gap-2 mb-6">${attrsHtml}</div>
+            <button onclick="addToCart('${prod.product_id}', '${prod.name.replace(/'/g, "\\'")}'); closeDetailModal();" class="w-full h-12 bg-primary hover:bg-primary-hover text-white rounded-lg font-bold text-sm shadow-md flex items-center justify-center gap-2">
+              <span class="material-symbols-outlined text-lg">shopping_cart</span>
+              <span>Add to Cart</span>
+            </button>
+          </div>
+          ${similarHtml}
+        </div>
+      `;
+      modal.classList.remove("hidden");
+    }
+
+    function closeDetailModal() {
+      document.getElementById("detailModal").classList.add("hidden");
+    }
+
+    // Cart Drawer & Multi-Step Checkout Flow
+    function addToCart(pid, name) {
+      const prod = allProducts.find(p => p.product_id === pid);
+      const currentQty = cart[pid] || 0;
+      if (prod && prod.stock !== undefined && currentQty >= prod.stock) {
+        showToast(`Only ${prod.stock} units available in stock!`, 'warning');
+        return;
+      }
+      cart[pid] = currentQty + 1;
+      updateCartBadge();
+      showToast(`Added ${name} to cart!`, 'shopping_bag');
+    }
+
+    function updateCartBadge() {
+      const count = Object.values(cart).reduce((a, b) => a + b, 0);
+      document.getElementById("cartBadgeCount").textContent = count;
+    }
+
+    function openCartDrawer() {
+      currentCheckoutStep = 1;
+      renderCheckoutStep();
+      document.getElementById("cartDrawer").classList.remove("hidden");
+    }
+
+    function closeCartDrawer() {
+      document.getElementById("cartDrawer").classList.add("hidden");
+    }
+
+    function renderCheckoutStep() {
+      const body = document.getElementById("drawerBody");
+      const footer = document.getElementById("drawerFooter");
+      const pids = Object.keys(cart);
+
+      if (!pids.length && currentCheckoutStep === 1) {
+        body.innerHTML = `
+          <div class="py-16 text-center text-gray-400">
+            <span class="material-symbols-outlined text-5xl mb-2 text-gray-300">shopping_bag</span>
+            <p class="text-base font-bold text-gray-600">Your cart is empty</p>
+          </div>
+        `;
+        footer.innerHTML = "";
+        return;
+      }
+
+      // Calculate totals
+      let subtotal = 0;
+      pids.forEach(pid => {
+        const prod = allProducts.find(p => p.product_id === pid);
+        if (prod) subtotal += prod.price * cart[pid];
+      });
+      const shipping = subtotal >= 150 ? 0 : 15;
+      const tax = subtotal * 0.08;
+      const grandTotal = subtotal + shipping + tax;
+
+      // STEP 1: REVIEW CART ITEMS
+      if (currentCheckoutStep === 1) {
+        document.getElementById("checkoutStepLabel").textContent = "Step 1 of 3: Review Cart Items";
+        body.innerHTML = `
+          <div class="space-y-3">
+            ${pids.map(pid => {
+              const p = allProducts.find(x => x.product_id === pid);
+              if (!p) return "";
+              const q = cart[pid];
+              return `
+                <div class="flex items-center gap-3 p-3 bg-surface-low rounded-xl border border-border">
+                  <img src="${API_BASE}/products/${pid}/image" class="w-14 h-14 object-contain bg-white rounded border border-border p-1">
+                  <div class="flex-1 min-w-0">
+                    <div class="text-xs font-bold text-on-surface truncate">${p.name}</div>
+                    <div class="text-xs font-extrabold text-primary">$${Number(p.price).toFixed(2)}</div>
+                    <div class="flex items-center gap-2 mt-1">
+                      <button onclick="cart['${pid}']--; if(cart['${pid}']<=0) delete cart['${pid}']; updateCartBadge(); renderCheckoutStep();" class="w-6 h-6 rounded bg-white border border-border text-xs font-bold">-</button>
+                      <span class="text-xs font-bold w-4 text-center">${q}</span>
+                      <button onclick="cart['${pid}']++; updateCartBadge(); renderCheckoutStep();" class="w-6 h-6 rounded bg-white border border-border text-xs font-bold">+</button>
+                    </div>
+                  </div>
+                  <div class="text-right">
+                    <div class="text-xs font-bold">$${(p.price * q).toFixed(2)}</div>
+                    <button onclick="delete cart['${pid}']; updateCartBadge(); renderCheckoutStep();" class="text-[11px] text-red-500 hover:underline mt-1">Remove</button>
+                  </div>
+                </div>
+              `;
+            }).join("")}
+          </div>
+        `;
+
+        footer.innerHTML = `
+          <div class="space-y-2 mb-3 text-xs">
+            <div class="flex justify-between"><span>Subtotal</span><strong class="font-bold">$${subtotal.toFixed(2)}</strong></div>
+            <div class="flex justify-between"><span>Courier Shipping</span><strong class="font-bold">${shipping === 0 ? 'FREE' : '$15.00'}</strong></div>
+            <div class="flex justify-between"><span>Estimated Tax (8%)</span><strong class="font-bold">$${tax.toFixed(2)}</strong></div>
+            <div class="border-t border-border pt-2 flex justify-between text-sm font-extrabold"><span>Total</span><span class="text-primary text-base">$${grandTotal.toFixed(2)}</span></div>
+          </div>
+          <button onclick="currentCheckoutStep = 2; renderCheckoutStep();" class="w-full h-11 bg-primary hover:bg-primary-hover text-white rounded-lg font-bold text-xs flex items-center justify-center gap-1">
+            <span>Proceed to Address Selection →</span>
+          </button>
+        `;
+      }
+
+      // STEP 2: SELECT DELIVERY ADDRESS
+      else if (currentCheckoutStep === 2) {
+        if (!currentUser) {
+          document.getElementById("checkoutStepLabel").textContent = "Step 2 of 3: Authentication Required";
+          body.innerHTML = `
+            <div class="py-12 text-center space-y-3">
+              <span class="material-symbols-outlined text-5xl text-primary mb-1">lock</span>
+              <h3 class="font-extrabold text-base text-on-surface">Sign In to Continue Checkout</h3>
+              <p class="text-xs text-gray-500 max-w-xs mx-auto">Please sign in or create an account to choose your shipping address and finalize your order.</p>
+              <button onclick="closeCartDrawer(); openAuthModal();" class="h-10 px-5 bg-primary text-white font-bold text-xs rounded-lg hover:bg-primary-hover shadow-md">
+                🔑 Sign In / Register
+              </button>
+            </div>
+          `;
+          footer.innerHTML = `
+            <button onclick="currentCheckoutStep = 1; renderCheckoutStep();" class="w-full h-11 bg-surface-low border border-border text-gray-700 rounded-lg font-bold text-xs">← Back to Cart</button>
+          `;
+          return;
+        }
+
+        document.getElementById("checkoutStepLabel").textContent = "Step 2 of 3: Select Delivery Address";
+        body.innerHTML = `
+          <div class="space-y-4">
+            <h4 class="text-xs font-bold uppercase tracking-wider text-gray-500">Shipping Destination</h4>
+            <div class="space-y-2">
+              ${userAddresses.length ? userAddresses.map(a => `
+                <label class="flex items-start gap-3 p-3 rounded-xl border ${selectedAddressId === a.id ? 'border-primary bg-primary-light/30' : 'border-border bg-white'} cursor-pointer">
+                  <input type="radio" name="checkout_addr" value="${a.id}" ${selectedAddressId === a.id ? 'checked' : ''} onchange="selectedAddressId = ${a.id};" class="mt-1 accent-primary">
+                  <div class="text-xs flex-1">
+                    <div class="font-bold text-on-surface">${a.label} ${a.is_default ? '<span class="text-[10px] text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded font-bold">DEFAULT</span>' : ''}</div>
+                    <div class="text-gray-700">${a.recipient_name}</div>
+                    <div class="text-gray-500">${a.street}, ${a.city}, ${a.state} ${a.postal_code}</div>
+                  </div>
+                </label>
+              `).join("") : '<div class="p-3 bg-amber-50 border border-amber-200 rounded-xl text-xs text-amber-800">No saved addresses found. Please enter your delivery address below:</div>'}
+            </div>
+
+            <!-- Inline Add Address -->
+            <div class="border border-dashed border-gray-300 rounded-xl p-3 bg-surface-low">
+              <div class="text-xs font-bold text-gray-700 mb-2">+ Add Another Destination</div>
+              <div class="space-y-2 text-xs">
+                <input id="quickStreet" placeholder="Street Address" class="w-full h-8 px-2.5 bg-white border border-border rounded">
+                <div class="flex gap-2">
+                  <input id="quickCity" placeholder="City" class="w-1/2 h-8 px-2.5 bg-white border border-border rounded">
+                  <input id="quickState" placeholder="State" class="w-1/4 h-8 px-2.5 bg-white border border-border rounded">
+                  <input id="quickZip" placeholder="ZIP" class="w-1/4 h-8 px-2.5 bg-white border border-border rounded">
+                </div>
+                <button onclick="addAddressAndSelect()" class="h-8 px-3 bg-gray-800 text-white rounded text-xs font-bold hover:bg-black">Save & Select</button>
+              </div>
+            </div>
+          </div>
+        `;
+
+        footer.innerHTML = `
+          <div class="flex gap-2">
+            <button onclick="currentCheckoutStep = 1; renderCheckoutStep();" class="w-1/3 h-11 bg-surface-low border border-border text-gray-700 rounded-lg font-bold text-xs">← Back</button>
+            <button onclick="if(!userAddresses.length && !selectedAddressId) { alert('Please add or select a delivery address.'); return; } currentCheckoutStep = 3; renderCheckoutStep();" class="w-2/3 h-11 bg-primary hover:bg-primary-hover text-white rounded-lg font-bold text-xs">Continue to Payment →</button>
+          </div>
+        `;
+      }
+
+      // STEP 3: PAYMENT METHOD & FINAL CONFIRMATION
+      else if (currentCheckoutStep === 3) {
+        document.getElementById("checkoutStepLabel").textContent = "Step 3 of 3: Payment & Order Confirmation";
+        const selectedAddr = userAddresses.find(a => a.id === selectedAddressId) || userAddresses[0];
+        const addrText = selectedAddr ? `${selectedAddr.recipient_name}, ${selectedAddr.street}, ${selectedAddr.city}, ${selectedAddr.state}` : "Default Delivery Address";
+
+        body.innerHTML = `
+          <div class="space-y-4 text-xs">
+            <div class="bg-surface-low border border-border rounded-xl p-3">
+              <span class="text-[10px] uppercase font-bold text-gray-500">Selected Destination</span>
+              <div class="font-bold text-on-surface mt-0.5">📍 ${addrText}</div>
+            </div>
+
+            <div>
+              <span class="text-[10px] uppercase font-bold text-gray-500 mb-1.5 block">Select Payment Instrument</span>
+              <div class="space-y-2">
+                ${[
+                  { id: "Credit Card (Nexus Pay)", icon: "credit_card", label: "Credit Card (Visa / Mastercard / Amex)" },
+                  { id: "Apple Pay / Google Pay", icon: "contactless", label: "Apple Pay / Google Pay One-Touch" },
+                  { id: "Cash on Courier Delivery (COD)", icon: "payments", label: "Cash on Courier Delivery (COD)" },
+                  { id: "Bank Wire / ACH", icon: "account_balance", label: "Direct Bank Transfer / ACH" }
+                ].map(p => `
+                  <label class="flex items-center gap-3 p-3 rounded-xl border ${selectedPaymentMethod === p.id ? 'border-primary bg-primary-light/30' : 'border-border bg-white'} cursor-pointer">
+                    <input type="radio" name="pay_meth" value="${p.id}" ${selectedPaymentMethod === p.id ? 'checked' : ''} onchange="selectedPaymentMethod = '${p.id}';" class="accent-primary">
+                    <span class="material-symbols-outlined text-base text-gray-600">${p.icon}</span>
+                    <span class="font-semibold text-on-surface">${p.label}</span>
+                  </label>
+                `).join("")}
+              </div>
+            </div>
+
+            <div class="border border-border rounded-xl p-3 bg-white space-y-1.5">
+              <div class="flex justify-between"><span>Subtotal</span><strong>$${subtotal.toFixed(2)}</strong></div>
+              <div class="flex justify-between"><span>Expedited Shipping</span><strong>${shipping === 0 ? 'FREE' : '$15.00'}</strong></div>
+              <div class="flex justify-between"><span>Estimated Tax</span><strong>$${tax.toFixed(2)}</strong></div>
+              <div class="border-t border-border pt-1.5 flex justify-between font-extrabold text-sm"><span>Grand Total</span><span class="text-primary text-base">$${grandTotal.toFixed(2)}</span></div>
+            </div>
+          </div>
+        `;
+
+        footer.innerHTML = `
+          <div class="flex gap-2">
+            <button onclick="currentCheckoutStep = 2; renderCheckoutStep();" class="w-1/3 h-11 bg-surface-low border border-border text-gray-700 rounded-lg font-bold text-xs">← Back</button>
+            <button id="finalOrderBtn" onclick="executeOrderFinal()" class="w-2/3 h-11 bg-primary hover:bg-primary-hover text-white rounded-lg font-bold text-xs flex items-center justify-center gap-1.5 shadow-md">
+              <span>⚡ Confirm Order & Pay</span>
+            </button>
+          </div>
+        `;
+      }
+    }
+
+    async function addAddressAndSelect() {
+      if (!currentUser) {
+        showToast("Please sign in to add an address.", "error");
+        return;
+      }
+      const street = document.getElementById("quickStreet").value.trim();
+      const city = document.getElementById("quickCity").value.trim();
+      const state = document.getElementById("quickState").value.trim();
+      const zip = document.getElementById("quickZip").value.trim();
+      if (!street || !city) {
+        showToast("Please provide street address and city.", "warning");
+        return;
+      }
+
+      const payload = {
+        label: "Shipping Destination",
+        recipient_name: currentUser.name,
+        street, city, state: state || "CA",
+        postal_code: zip || "90001",
+        is_default: true
+      };
+
+      const res = await (await fetch(`${API_BASE}/users/${currentUser.id}/addresses`, {
+        method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload)
+      })).json();
+
+      await loadUserAddresses();
+      selectedAddressId = res.address_id;
+      showToast("Address saved and selected!", "check_circle");
+      renderCheckoutStep();
+    }
+
+    async function executeOrderFinal() {
+      const pids = Object.keys(cart);
+      if (!pids.length) return alert("Cart is empty.");
+      if (!currentUser) {
+        closeCartDrawer();
+        openAuthModal();
+        showToast("Please sign in to place your order.", "error");
+        return;
+      }
+
+      const selectedAddr = userAddresses.find(a => a.id === selectedAddressId) || userAddresses[0];
+      const addrString = selectedAddr ? `${selectedAddr.recipient_name}, ${selectedAddr.street}, ${selectedAddr.city}, ${selectedAddr.state} ${selectedAddr.postal_code}` : "Default Delivery Address";
+
+      const payload = {
+        user_id: currentUser.id,
+        items: pids.map(pid => ({ product_id: pid, qty: cart[pid] })),
+        shipping_address: addrString,
+        payment_method: selectedPaymentMethod
+      };
+
+      const btn = document.getElementById("finalOrderBtn");
+      btn.disabled = true;
+      btn.innerHTML = `<span>Processing ACID stock check...</span>`;
+
+      try {
+        const res = await fetch(`${API_BASE}/orders`, {
+          method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload)
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.detail || "Order failed");
+
+        cart = {};
+        updateCartBadge();
+        closeCartDrawer();
+        showToast(`🎉 Order #${data.order_id} placed successfully!`, "verified");
+        setTimeout(() => {
+          openProfileModal();
+        }, 700);
+      } catch (e) {
+        alert(`Order Transaction Error: ${e.message}`);
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    // Profile & Address Manager Modal
+    async function openProfileModal() {
+      if (!currentUser) return openAuthModal();
+      document.getElementById("profNameInput").value = currentUser.name;
+      document.getElementById("profEmailInput").value = currentUser.email;
+
+      await loadUserAddresses();
+      renderProfileAddresses();
+      await renderProfileOrders();
+
+      document.getElementById("profileModal").classList.remove("hidden");
+    }
+
+    function closeProfileModal() {
+      document.getElementById("profileModal").classList.add("hidden");
+    }
+
+    function renderProfileAddresses() {
+      const container = document.getElementById("profileAddressList");
+      container.innerHTML = userAddresses.map(a => `
+        <div class="flex items-center justify-between p-3 bg-surface-low border border-border rounded-xl text-xs">
+          <div>
+            <div class="font-bold text-on-surface">${a.label} ${a.is_default ? '<span class="text-[10px] text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded font-bold">DEFAULT</span>' : ''}</div>
+            <div class="text-gray-500">${a.street}, ${a.city}, ${a.state} ${a.postal_code}</div>
+          </div>
+          <div class="flex gap-2">
+            ${!a.is_default ? `<button onclick="setDefaultAddress(${a.id})" class="text-primary hover:underline font-bold">Set Default</button>` : ''}
+            <button onclick="deleteAddress(${a.id})" class="text-red-500 hover:underline">Delete</button>
+          </div>
+        </div>
+      `).join("") || '<p class="text-xs text-gray-400">No addresses saved.</p>';
+    }
+
+    async function setDefaultAddress(aid) {
+      await fetch(`${API_BASE}/users/${currentUser.id}/addresses/${aid}/default`, { method: "PUT" });
+      await loadUserAddresses();
+      renderProfileAddresses();
+    }
+
+    async function deleteAddress(aid) {
+      await fetch(`${API_BASE}/users/${currentUser.id}/addresses/${aid}`, { method: "DELETE" });
+      await loadUserAddresses();
+      renderProfileAddresses();
+    }
+
+    function toggleNewAddressForm() {
+      document.getElementById("newAddressForm").classList.toggle("hidden");
+    }
+
+    async function saveNewAddress() {
+      if (!currentUser) return;
+      const label = document.getElementById("newAddrLabel").value.trim() || "Home";
+      const name = document.getElementById("newAddrName").value.trim() || currentUser.name;
+      const street = document.getElementById("newAddrStreet").value.trim();
+      const city = document.getElementById("newAddrCity").value.trim();
+      const state = document.getElementById("newAddrState").value.trim();
+      const zip = document.getElementById("newAddrZip").value.trim();
+
+      if (!street || !city) {
+        showToast("Please provide street address and city.", "warning");
+        return;
+      }
+
+      await fetch(`${API_BASE}/users/${currentUser.id}/addresses`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ label, recipient_name: name, street, city, state: state || "CA", postal_code: zip || "90001", is_default: false })
+      });
+
+      document.getElementById("newAddrStreet").value = "";
+      document.getElementById("newAddrCity").value = "";
+      document.getElementById("newAddrState").value = "";
+      document.getElementById("newAddrZip").value = "";
+
+      toggleNewAddressForm();
+      await loadUserAddresses();
+      renderProfileAddresses();
+      showToast("New destination address saved!", "check_circle");
+    }
+
+    async function renderProfileOrders() {
+      const container = document.getElementById("profileOrderList");
+      const orders = await (await fetch(`${API_BASE}/orders?user_id=${currentUser.id}`)).json();
+      
+      container.innerHTML = orders.map(o => `
+        <div class="p-3 bg-surface-low border border-border rounded-xl text-xs space-y-1">
+          <div class="flex justify-between font-bold">
+            <span class="text-on-surface">Order #${o.id} • ${o.status.toUpperCase()}</span>
+            <span class="text-primary font-extrabold">$${Number(o.total).toFixed(2)}</span>
+          </div>
+          <div class="text-[11px] text-gray-500">📍 ${o.shipping_address || 'Standard Address'}</div>
+          <div class="text-[11px] text-gray-500">💳 ${o.payment_method || 'Credit Card'} • ${o.created_at || 'Recently'}</div>
+        </div>
+      `).join("") || '<p class="text-xs text-gray-400">No past orders found.</p>';
+    }
+
+    async function updateProfile() {
+      const name = document.getElementById("profNameInput").value.trim();
+      const email = document.getElementById("profEmailInput").value.trim().toLowerCase();
+      if (!name || !email) {
+        showToast("Name and email cannot be empty.", "warning");
+        return;
+      }
+      const res = await fetch(`${API_BASE}/users/${currentUser.id}`, {
+        method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ name, email })
+      });
+      if (res.ok) {
+        currentUser = await res.json();
+        localStorage.setItem("nexus_user", JSON.stringify(currentUser));
+        document.getElementById("userNameHeader").textContent = currentUser.name;
+        showToast("Profile credentials updated!", "check_circle");
+      } else {
+        const err = await res.json();
+        showToast(err.detail || "Failed to update profile.", "error");
+      }
+    }
+
+    // Auth Modal & Account Functions
+    function openAuthModal() {
+      document.getElementById("authModal").classList.remove("hidden");
+    }
+
+    function closeAuthModal() {
+      document.getElementById("authModal").classList.add("hidden");
+    }
+
+    function switchAuthTab(tab) {
+      const signInSec = document.getElementById("authSignInSection");
+      const regSec = document.getElementById("authRegisterSection");
+      const tabSignBtn = document.getElementById("tabSignInBtn");
+      const tabRegBtn = document.getElementById("tabRegisterBtn");
+
+      if (tab === 'register') {
+        signInSec.classList.add("hidden");
+        regSec.classList.remove("hidden");
+        tabSignBtn.className = "flex-1 pb-2.5 text-xs font-bold border-b-2 border-transparent text-gray-500 hover:text-gray-800 transition-all";
+        tabRegBtn.className = "flex-1 pb-2.5 text-xs font-bold border-b-2 border-primary text-primary transition-all";
+      } else {
+        regSec.classList.add("hidden");
+        signInSec.classList.remove("hidden");
+        tabSignBtn.className = "flex-1 pb-2.5 text-xs font-bold border-b-2 border-primary text-primary transition-all";
+        tabRegBtn.className = "flex-1 pb-2.5 text-xs font-bold border-b-2 border-transparent text-gray-500 hover:text-gray-800 transition-all";
+      }
+    }
+
+    function showRegisterView() {
+      switchAuthTab('register');
+    }
+
+    async function quickDemoLogin() {
+      try {
+        const res = await fetch(`${API_BASE}/auth/login`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email: "demo@nexus.com", password: "demo123" })
+        });
+        const data = await res.json();
+        if (res.ok) {
+          currentUser = data.user;
+          localStorage.setItem("nexus_user", JSON.stringify(currentUser));
+          localStorage.removeItem("nexus_logged_out");
+          document.getElementById("userNameHeader").textContent = currentUser.name;
+          closeAuthModal();
+          await loadUserAddresses();
+          showToast("⚡ Logged in as Demo User!", "verified");
+        } else {
+          showToast(data.detail || "Demo sign in failed.", "error");
+        }
+      } catch (e) {
+        showToast(`Login failed: ${e.message}`, "error");
+      }
+    }
+
+    async function loginUser() {
+      const email = document.getElementById("authEmail").value.trim();
+      const password = document.getElementById("authPassword").value.trim();
+
+      if (!email || !password) {
+        showToast("Please provide both email and password.", "warning");
+        return;
+      }
+
+      try {
+        const res = await fetch(`${API_BASE}/auth/login`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, password })
+        });
+        const data = await res.json();
+        if (!res.ok) {
+          showToast(data.detail || "Invalid email or password.", "error");
+          return;
+        }
+
+        currentUser = data.user;
+        localStorage.setItem("nexus_user", JSON.stringify(currentUser));
+        localStorage.removeItem("nexus_logged_out");
+        document.getElementById("userNameHeader").textContent = currentUser.name;
+        document.getElementById("authEmail").value = "";
+        document.getElementById("authPassword").value = "";
+        closeAuthModal();
+        await loadUserAddresses();
+        showToast(`Welcome back, ${currentUser.name}!`, "verified");
+      } catch (e) {
+        showToast(`Login error: ${e.message}`, "error");
+      }
+    }
+
+    async function registerUser() {
+      const name = document.getElementById("regName").value.trim();
+      const email = document.getElementById("regEmail").value.trim();
+      const password = document.getElementById("regPassword").value.trim();
+
+      if (!name || !email || !password) {
+        showToast("Please fill in full name, email, and password.", "warning");
+        return;
+      }
+
+      try {
+        const res = await fetch(`${API_BASE}/auth/register`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ name, email, password })
+        });
+        const data = await res.json();
+        if (!res.ok) {
+          showToast(data.detail || "Registration failed.", "error");
+          return;
+        }
+
+        currentUser = data.user;
+        localStorage.setItem("nexus_user", JSON.stringify(currentUser));
+        localStorage.removeItem("nexus_logged_out");
+        document.getElementById("userNameHeader").textContent = currentUser.name;
+        document.getElementById("regName").value = "";
+        document.getElementById("regEmail").value = "";
+        document.getElementById("regPassword").value = "";
+        closeAuthModal();
+        await loadUserAddresses();
+        showToast(`🎉 Account created! Welcome, ${currentUser.name}!`, "verified");
+      } catch (e) {
+        showToast(`Registration error: ${e.message}`, "error");
+      }
+    }
+
+    function logoutUser() {
+      currentUser = null;
+      userAddresses = [];
+      selectedAddressId = null;
+      localStorage.removeItem("nexus_user");
+      localStorage.setItem("nexus_logged_out", "true");
+      document.getElementById("userNameHeader").textContent = "Sign In / Register";
+      closeProfileModal();
+      showToast("Signed out of your account.", "logout");
+    }
+
+    function showToast(message, icon = "info") {
+      const container = document.getElementById("toastContainer");
+      const toast = document.createElement("div");
+      toast.className = "flex items-center gap-2 bg-slate-900 text-white text-xs font-semibold px-4 py-3 rounded-xl shadow-2xl transition-all border border-slate-700 pointer-events-auto";
+      toast.innerHTML = `<span class="material-symbols-outlined text-base text-primary">${icon}</span><span>${message}</span>`;
+      container.appendChild(toast);
+      setTimeout(() => toast.remove(), 3200);
+    }
+
+    window.addEventListener("DOMContentLoaded", init);
+  </script>
+</body>
+</html>

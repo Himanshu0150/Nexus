@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_standard" name="shell-type"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script><script id="tailwind-config">tailwind.config={darkMode:"class",theme:{extend:{"colors":{"surface":"#FFFFFF","surface-container-lowest":"#FFFFFF","surface-container-low":"#F3F4F6","surface-container":"#F3F4F6","surface-container-highest":"#E5E5E5","border-default":"#E5E5E5","primary":"#171717","on-surface":"#171717","on-surface-variant":"#737373","outline":"#737373","outline-variant":"#E5E5E5","interactive":"#356AE6","interactive-hover":"#2554c7","accent-bg":"#EAF1FF","dark-accent":"#242424","dark-accent-hover":"#1a1a1a"},"borderRadius":{"DEFAULT":"0.125rem","lg":"0.25rem","xl":"0.5rem","full":"0.75rem"},"spacing":{"space-2xl":"4rem","gutter":"1.5rem","margin-tablet":"2rem","margin":"3rem","space-lg":"1.5rem","space-md":"1rem","gutter-mobile":"1rem","margin-mobile":"1rem","space-3xl":"6rem","space-sm":"0.5rem","space-xs":"0.25rem","space-xl":"2.5rem"},"fontFamily":{"label-caps":["Inter"],"headline-md":["Inter"],"body-md":["Inter"],"headline-sm":["Inter"],"mono-spec":["Inter"],"label-md":["Inter"],"title-md":["Inter"],"headline-lg-mobile":["Inter"],"display-xl":["Inter"],"display-xl-mobile":["Inter"],"headline-lg":["Inter"],"body-sm":["Inter"],"body-lg":["Inter"]},"fontSize":{"label-caps":["11px",{"lineHeight":"14px","letterSpacing":"0.08em","fontWeight":"600"}],"headline-md":["24px",{"lineHeight":"32px","letterSpacing":"-0.015em","fontWeight":"600"}],"body-md":["14px",{"lineHeight":"22px","letterSpacing":"0em","fontWeight":"400"}],"headline-sm":["20px",{"lineHeight":"28px","letterSpacing":"-0.01em","fontWeight":"500"}],"mono-spec":["12px",{"lineHeight":"16px","letterSpacing":"-0.01em","fontWeight":"400"}],"label-md":["12px",{"lineHeight":"16px","letterSpacing":"0.02em","fontWeight":"500"}],"title-md":["16px",{"lineHeight":"24px","letterSpacing":"-0.005em","fontWeight":"600"}],"headline-lg-mobile":["26px",{"lineHeight":"34px","letterSpacing":"-0.015em","fontWeight":"600"}],"display-xl":["56px",{"lineHeight":"64px","letterSpacing":"-0.03em","fontWeight":"600"}],"display-xl-mobile":["36px",{"lineHeight":"44px","letterSpacing":"-0.02em","fontWeight":"600"}],"headline-lg":["32px",{"lineHeight":"40px","letterSpacing":"-0.02em","fontWeight":"600"}],"body-sm":["13px",{"lineHeight":"18px","letterSpacing":"0.005em","fontWeight":"400"}],"body-lg":["16px",{"lineHeight":"26px","letterSpacing":"0em","fontWeight":"400"}]}}}};</script></head><body class="bg-surface font-body-md text-[#171717]"><header class="fixed top-0 left-0 right-0 z-50 bg-white border-b border-[#E5E5E5]"><div class="border-b border-[#E5E5E5] bg-[#F3F4F6]"><div class="max-w-7xl mx-auto px-margin-tablet lg:px-margin h-8 flex items-center justify-between font-label-caps text-label-caps text-[#737373]"><div class="flex items-center gap-space-md"><span class="flex items-center gap-space-xs text-[#737373]"><span class="w-1.5 h-1.5 rounded-full bg-[#356AE6]"></span>Flagship Hardware Portal</span></div><div class="flex items-center gap-space-lg"><a class="hover:text-[#171717] transition-colors" data-path="customer-care" href="#">Customer Care</a><span class="text-[#E5E5E5]">/</span><a class="hover:text-[#171717] transition-colors" data-path="store-locator" href="#">Store Locator</a><span class="text-[#E5E5E5]">/</span><a class="hover:text-[#171717] transition-colors" data-path="order-tracking" href="#">Order Tracking</a></div></div></div><div class="h-16 max-w-7xl mx-auto px-margin-tablet lg:px-margin flex items-center justify-between gap-space-lg"><div class="flex items-center gap-space-xl"><a class="flex items-center gap-space-sm focus:outline-none" data-path="home" href="#"><span class="font-title-md text-title-md tracking-tight font-semibold text-[#171717] uppercase">Nexus</span><span class="font-mono-spec text-mono-spec text-[#737373] uppercase">Systems</span></a><nav class="hidden lg:flex items-center gap-space-lg h-16" data-active-classes="text-[#171717] font-semibold border-b-2 border-[#356AE6]"><a aria-current="page" class="h-full flex items-center transition-colors text-[#171717] font-semibold border-b-2 border-[#356AE6]" data-path="laptops" href="#">Laptops</a><a class="h-full flex items-center font-body-sm text-body-sm text-[#737373] hover:text-[#171717] transition-colors" data-path="audio" href="#">Audio</a><a class="h-full flex items-center font-body-sm text-body-sm text-[#737373] hover:text-[#171717] transition-colors" data-path="displays" href="#">Displays</a><a class="h-full flex items-center font-body-sm text-body-sm text-[#737373] hover:text-[#171717] transition-colors" data-path="wearables" href="#">Wearables</a><a class="h-full flex items-center font-body-sm text-body-sm text-[#737373] hover:text-[#171717] transition-colors" data-path="accessories" href="#">Accessories</a></nav></div><div class="flex items-center gap-space-md"><div class="hidden md:flex items-center h-10 w-64 lg:w-80 px-space-sm bg-[#F3F4F6] border border-[#E5E5E5] rounded"><span class="material-symbols-outlined text-[#737373] text-[18px] mr-space-xs">search</span><span class="font-body-sm text-body-sm text-[#737373] flex-1 select-none">Search hardware specs...</span><kbd class="font-mono-spec text-[10px] leading-none px-1.5 py-1 bg-white border border-[#E5E5E5] rounded text-[#737373]">⌘K</kbd></div><a class="h-10 w-10 flex items-center justify-center text-[#737373] hover:text-[#171717] transition-colors" data-path="wishlist" href="#"><span class="material-symbols-outlined text-[20px]">favorite</span></a><a class="h-10 px-space-sm flex items-center gap-space-xs text-[#171717] border border-[#E5E5E5] hover:bg-[#F3F4F6] transition-colors rounded" data-path="cart" href="#"><span class="material-symbols-outlined text-[20px]">shopping_bag</span><span class="font-mono-spec text-mono-spec text-[#171717] font-medium">0</span></a><div class="h-8 w-px bg-[#E5E5E5] mx-space-xs hidden sm:block"></div><a class="flex items-center gap-space-xs focus:outline-none" data-path="account" href="#"><img alt="Profile" class="w-8 h-8 rounded-full object-cover border border-[#E5E5E5]" src="https://lh3.googleusercontent.com/aida/AEtjO1WDU5-5HU9ueKSPYfexc62hjCql4KuMIt9f0Uu4-zEoKj4v0Z8jbOA3epZVrYdVnUn0xjZshtqNkiuX4DRyaQpgIKqRJO-vR5N9F2rNmqnKYXM5Yur_wrgD5YLjM3eC2L99RVGWep-IuQ7UKNT-QbWA1VzL49CzHyFk8HfXJM7bCL9vy7G0qh9BLV0WwXL2End91Fw_nKtuUTByj0j5oZBkmQIMev9FuDFMpBuR9lx8orihg0ODCNJ8dQ"/></a></div></div></header><main class="w-full pt-24 bg-white min-h-screen"><div class="flex flex-col w-full">
+<!-- Breadcrumbs & Category Introduction Bar -->
+<section class="w-full bg-white border-b border-[#E5E5E5]">
+<div class="max-w-7xl mx-auto px-margin-tablet lg:px-margin pt-space-md pb-space-lg">
+<nav aria-label="Breadcrumb" class="flex items-center gap-space-xs font-mono-spec text-mono-spec text-[#737373] mb-space-sm">
+<a class="hover:text-[#356AE6] transition-colors" data-path="home" href="#">Catalog</a>
+<span>/</span>
+<a class="hover:text-[#356AE6] transition-colors" data-path="hardware" href="#">Hardware Architecture</a>
+<span>/</span>
+<span class="text-[#171717] font-medium">Laptops &amp; Mobile Workstations</span>
+</nav>
+<div class="flex flex-col lg:flex-row lg:items-end justify-between gap-space-md">
+<div>
+<div class="flex items-center gap-space-sm mb-space-xs">
+<span class="px-space-xs py-0.5 bg-[#F3F4F6] font-mono-spec text-label-caps uppercase tracking-wider text-[#171717] rounded">SYS-SERIES: ARCH-04</span>
+<span class="font-mono-spec text-mono-spec text-[#737373]">14 SKU configurations calibrated</span>
+</div>
+<h1 class="font-headline-lg text-headline-lg text-[#171717] tracking-tight font-semibold">Laptops &amp; Mobile Workstations</h1>
+<p class="font-body-md text-body-md text-[#737373] max-w-2xl mt-1">
+            Engineered with uniform CNC unibody enclosures, micro-etched low-reflectance displays, and custom vapor chamber cooling designed for sustained compile, 3D rendering, and local LLM deployment workflows.
+          </p>
+</div>
+<!-- Quick Spec Highlights -->
+<div class="flex items-center gap-space-lg font-mono-spec text-mono-spec bg-[#F3F4F6] border border-[#E5E5E5] px-space-md py-space-sm rounded">
+<div class="flex flex-col">
+<span class="text-[#737373] uppercase text-[10px]">TDP Envelope</span>
+<span class="text-[#171717] font-medium">Up to 115W Sustained</span>
+</div>
+<div class="w-px h-7 bg-[#E5E5E5]"></div>
+<div class="flex flex-col">
+<span class="text-[#737373] uppercase text-[10px]">Thermal Limit</span>
+<span class="text-[#171717] font-medium">&lt; 38 dBA Acoustic Noise</span>
+</div>
+<div class="w-px h-7 bg-[#E5E5E5]"></div>
+<div class="flex flex-col">
+<span class="text-[#737373] uppercase text-[10px]">Color Accuracy</span>
+<span class="text-[#171717] font-medium">ΔE &lt; 0.8 Factory Tuned</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Controls & Filter Toolbar -->
+<section class="w-full bg-white sticky top-16 z-30 border-b border-[#E5E5E5]">
+<div class="max-w-7xl mx-auto px-margin-tablet lg:px-margin h-14 flex items-center justify-between">
+<div class="flex items-center gap-space-md">
+<button class="flex items-center gap-space-xs h-9 px-space-sm bg-white border border-[#E5E5E5] text-[#171717] font-label-md text-label-md rounded hover:bg-[#F3F4F6] transition-colors" id="toggle-filter-btn">
+<span class="material-symbols-outlined text-[18px]">tune</span>
+<span>Filter Parameters</span>
+<span class="w-4 h-4 rounded-full bg-[#356AE6] text-white text-[10px] flex items-center justify-center font-mono-spec">4</span>
+</button>
+<!-- Active Filter Pills -->
+<div class="hidden md:flex items-center gap-space-xs">
+<span class="inline-flex items-center gap-1 px-2.5 py-1 bg-[#EAF1FF] text-[#356AE6] font-mono-spec text-mono-spec rounded border border-[#356AE6]/20 font-medium">
+            Sil: M4 Max
+            <button class="hover:text-[#171717] text-[#356AE6] transition-colors"><span class="material-symbols-outlined text-[14px]">close</span></button>
+</span>
+<span class="inline-flex items-center gap-1 px-2.5 py-1 bg-[#EAF1FF] text-[#356AE6] font-mono-spec text-mono-spec rounded border border-[#356AE6]/20 font-medium">
+            RAM: ≥32GB
+            <button class="hover:text-[#171717] text-[#356AE6] transition-colors"><span class="material-symbols-outlined text-[14px]">close</span></button>
+</span>
+<span class="inline-flex items-center gap-1 px-2.5 py-1 bg-[#EAF1FF] text-[#356AE6] font-mono-spec text-mono-spec rounded border border-[#356AE6]/20 font-medium">
+            Ships Immediate
+            <button class="hover:text-[#171717] text-[#356AE6] transition-colors"><span class="material-symbols-outlined text-[14px]">close</span></button>
+</span>
+<button class="font-mono-spec text-mono-spec text-[#356AE6] hover:underline pl-space-xs">Clear all</button>
+</div>
+</div>
+<div class="flex items-center gap-space-md">
+<div class="flex items-center gap-space-xs">
+<span class="font-mono-spec text-mono-spec text-[#737373] hidden sm:inline">Sort:</span>
+<select class="h-9 px-space-sm bg-white border border-[#E5E5E5] font-body-sm text-body-sm text-[#171717] rounded cursor-pointer focus:outline-none focus:border-[#356AE6]">
+<option>Architectural Benchmark (Default)</option>
+<option>Base Price: Low to High</option>
+<option>Base Price: High to Low</option>
+<option>Display Resolution</option>
+<option>Weight: Ultraportable First</option>
+</select>
+</div>
+<div class="flex items-center bg-[#F3F4F6] border border-[#E5E5E5] rounded p-0.5">
+<button class="w-8 h-8 flex items-center justify-center bg-white text-[#171717] rounded shadow-none" title="Grid Layout">
+<span class="material-symbols-outlined text-[18px]">grid_view</span>
+</button>
+<button class="w-8 h-8 flex items-center justify-center text-[#737373] hover:text-[#171717] rounded" title="Technical Matrix View">
+<span class="material-symbols-outlined text-[18px]">table_rows</span>
+</button>
+</div>
+</div>
+</div>
+</section>
+<!-- Main Catalog Layout with Faceted Sidebar and Refined Product Grid -->
+<section class="w-full bg-white py-space-xl">
+<div class="max-w-7xl mx-auto px-margin-tablet lg:px-margin">
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-space-xl items-start">
+<!-- Faceted Filter Rail (Desktop) -->
+<aside class="hidden lg:flex flex-col lg:col-span-3 space-y-space-lg bg-[#F3F4F6] p-space-md rounded border border-[#E5E5E5]">
+<div class="flex items-center justify-between pb-space-xs border-b border-[#E5E5E5]">
+<span class="font-label-caps text-label-caps uppercase text-[#171717] tracking-wider font-semibold">Engineering Specs</span>
+<span class="font-mono-spec text-[11px] text-[#737373]">14 Matches</span>
+</div>
+<!-- Silicon Architecture -->
+<div class="space-y-space-xs pt-space-xs">
+<span class="font-mono-spec text-mono-spec font-semibold text-[#171717] block uppercase text-[11px]">Processor Architecture</span>
+<label class="flex items-center justify-between font-body-sm text-body-sm text-[#171717] hover:text-[#356AE6] cursor-pointer py-1">
+<span class="flex items-center gap-2">
+<input checked="" class="w-4 h-4 rounded text-[#356AE6] focus:ring-[#356AE6] border-[#E5E5E5]" type="checkbox"/>
+<span>Nexus M4 Pro (14-Core)</span>
+</span>
+<span class="font-mono-spec text-[11px] text-[#737373]">8</span>
+</label>
+<label class="flex items-center justify-between font-body-sm text-body-sm text-[#171717] hover:text-[#356AE6] cursor-pointer py-1">
+<span class="flex items-center gap-2">
+<input checked="" class="w-4 h-4 rounded text-[#356AE6] focus:ring-[#356AE6] border-[#E5E5E5]" type="checkbox"/>
+<span>Nexus M4 Max (16-Core)</span>
+</span>
+<span class="font-mono-spec text-[11px] text-[#737373]">4</span>
+</label>
+<label class="flex items-center justify-between font-body-sm text-body-sm text-[#171717] hover:text-[#356AE6] cursor-pointer py-1">
+<span class="flex items-center gap-2">
+<input class="w-4 h-4 rounded text-[#356AE6] focus:ring-[#356AE6] border-[#E5E5E5]" type="checkbox"/>
+<span>Intel Core Ultra 9 185H</span>
+</span>
+<span class="font-mono-spec text-[11px] text-[#737373]">2</span>
+</label>
+</div>
+<!-- Memory Tier -->
+<div class="space-y-space-xs pt-space-md">
+<span class="font-mono-spec text-mono-spec font-semibold text-[#171717] block uppercase text-[11px]">Unified Memory Pool</span>
+<div class="grid grid-cols-3 gap-1 pt-1">
+<button class="h-8 font-mono-spec text-[12px] bg-white border border-[#E5E5E5] text-[#737373] hover:text-[#171717] rounded">16GB</button>
+<button class="h-8 font-mono-spec text-[12px] bg-[#EAF1FF] border border-[#356AE6] text-[#356AE6] rounded font-semibold">32GB</button>
+<button class="h-8 font-mono-spec text-[12px] bg-white border border-[#E5E5E5] text-[#737373] hover:text-[#171717] rounded">64GB</button>
+<button class="h-8 font-mono-spec text-[12px] bg-white border border-[#E5E5E5] text-[#737373] hover:text-[#171717] rounded col-span-3">128GB LPDDR5X (Unified)</button>
+</div>
+</div>
+<!-- Display Calibration -->
+<div class="space-y-space-xs pt-space-md">
+<span class="font-mono-spec text-mono-spec font-semibold text-[#171717] block uppercase text-[11px]">Display Scale &amp; Refresh</span>
+<label class="flex items-center justify-between font-body-sm text-body-sm text-[#171717] hover:text-[#356AE6] cursor-pointer py-1">
+<span class="flex items-center gap-2">
+<input checked="" class="w-4 h-4 rounded text-[#356AE6] focus:ring-[#356AE6] border-[#E5E5E5]" type="checkbox"/>
+<span>14.2" Liquid XDR (3024x1964)</span>
+</span>
+<span class="font-mono-spec text-[11px] text-[#737373]">6</span>
+</label>
+<label class="flex items-center justify-between font-body-sm text-body-sm text-[#171717] hover:text-[#356AE6] cursor-pointer py-1">
+<span class="flex items-center gap-2">
+<input class="w-4 h-4 rounded text-[#356AE6] focus:ring-[#356AE6] border-[#E5E5E5]" type="checkbox"/>
+<span>16.2" Liquid XDR (3456x2234)</span>
+</span>
+<span class="font-mono-spec text-[11px] text-[#737373]">5</span>
+</label>
+<label class="flex items-center justify-between font-body-sm text-body-sm text-[#171717] hover:text-[#356AE6] cursor-pointer py-1">
+<span class="flex items-center gap-2">
+<input class="w-4 h-4 rounded text-[#356AE6] focus:ring-[#356AE6] border-[#E5E5E5]" type="checkbox"/>
+<span>Anti-Glare Nano-Texture</span>
+</span>
+<span class="font-mono-spec text-[11px] text-[#737373]">3</span>
+</label>
+</div>
+<!-- Thermal & Power Envelope -->
+<div class="space-y-space-xs pt-space-md">
+<span class="font-mono-spec text-mono-spec font-semibold text-[#171717] block uppercase text-[11px]">Enclosure Colorway</span>
+<div class="flex items-center gap-2 pt-1">
+<button class="w-6 h-6 rounded-full bg-[#1e2022] ring-2 ring-[#356AE6] ring-offset-2 ring-offset-[#F3F4F6]" title="Matte Obsidian"></button>
+<button class="w-6 h-6 rounded-full bg-[#7d8288] border border-[#E5E5E5]" title="Space Gray"></button>
+<button class="w-6 h-6 rounded-full bg-[#d0d3d4] border border-[#E5E5E5]" title="Natural Silver"></button>
+<button class="w-6 h-6 rounded-full bg-[#3d3f44] border border-[#E5E5E5]" title="Dark Titanium"></button>
+</div>
+</div>
+<!-- Availability & Logistics -->
+<div class="space-y-space-xs pt-space-md">
+<span class="font-mono-spec text-mono-spec font-semibold text-[#171717] block uppercase text-[11px]">Logistics Protocol</span>
+<label class="flex items-center justify-between font-body-sm text-body-sm text-[#171717] hover:text-[#356AE6] cursor-pointer py-1">
+<span class="flex items-center gap-2">
+<input checked="" class="w-4 h-4 rounded text-[#356AE6] focus:ring-[#356AE6] border-[#E5E5E5]" type="checkbox"/>
+<span>Same-Day Courier Ready</span>
+</span>
+<span class="font-mono-spec text-[11px] text-[#356AE6] font-medium">9</span>
+</label>
+<label class="flex items-center justify-between font-body-sm text-body-sm text-[#171717] hover:text-[#356AE6] cursor-pointer py-1">
+<span class="flex items-center gap-2">
+<input class="w-4 h-4 rounded text-[#356AE6] focus:ring-[#356AE6] border-[#E5E5E5]" type="checkbox"/>
+<span>Flagship Demo Available</span>
+</span>
+<span class="font-mono-spec text-[11px] text-[#737373]">12</span>
+</label>
+</div>
+<!-- Support Add-on info -->
+<div class="bg-white border border-[#E5E5E5] p-space-sm rounded">
+<span class="font-mono-spec text-[10px] text-[#737373] uppercase block mb-1">Nexus Pro Warranty</span>
+<p class="font-body-sm text-body-sm text-[#737373]">Includes 3-year global on-site hardware swap and battery degradation coverage down to 80% capacity.</p>
+</div>
+</aside>
+<!-- Product Grid Area -->
+<main class="lg:col-span-9 flex flex-col gap-space-lg">
+<!-- Products 2x2 Grid with Retail Rigor -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-space-md">
+<!-- Card 1: Nexus Aerolite 14 -->
+<article class="bg-white border border-[#E5E5E5] rounded p-space-md flex flex-col justify-between group transition-colors">
+<div>
+<div class="flex items-start justify-between mb-space-xs">
+<div>
+<span class="font-mono-spec text-[11px] text-[#737373] uppercase tracking-wider">Sub-1.3kg Class</span>
+<h2 class="font-title-md text-title-md font-semibold text-[#171717] mt-0.5">Nexus Aerolite 14</h2>
+</div>
+<span class="px-space-xs py-0.5 bg-[#F3F4F6] border border-[#E5E5E5] font-mono-spec text-[11px] text-[#171717] rounded">In Stock</span>
+</div>
+<!-- Verified Spec String -->
+<p class="font-mono-spec text-mono-spec text-[#737373] mb-space-sm">
+                  14.2" XDR 120Hz • 32GB Unified • 1TB SSD • M4 Pro
+                </p>
+<!-- Product Canvas Image Presentation -->
+<div class="w-full h-56 bg-[#F3F4F6] border border-[#E5E5E5] rounded flex items-center justify-center p-space-md relative overflow-hidden mb-space-md">
+<img class="max-h-full max-w-full object-contain filter group-hover:scale-105 transition-transform duration-300" data-alt="A sleek minimalist ultra-thin silver gray laptop open at an angle resting on a smooth off-white architectural surface. Soft diffused studio lighting casting gentle contact shadows, displaying premium matte aluminum construction, black precision chiclet keyboard, and an anti-reflective display edge." src="https://lh3.googleusercontent.com/aida-public/AB6AXuClE7BMGn6qQbV7xJ0Mh1oN-ui43JTQRNiBXsKVxm-igGbQTgf-GZGetbmjLaTdYUhQnxe8_zdwuU6-pgv2oWCWh9Ln_eLcleJoPW1BRkZtv82pIbxQV7nDH5CYwykSRiEsLJ_h5rhPdMmyTmw41vP0YpZdb2aVSRnuJGkks_2OSVgkQyCIDm6jSTdfAj19NzLswknEghcNhAJaEI-G6LrJHPvTTxZCbUTWkjBoAsTTQiV_ZELfSbw"/>
+<span class="absolute bottom-2 left-2 font-mono-spec text-[10px] text-[#737373] bg-white/90 border border-[#E5E5E5] px-1 rounded">Scale: 1:1.15</span>
+</div>
+<!-- Key Metrics Metric List -->
+<div class="grid grid-cols-3 gap-2 py-space-xs bg-[#F3F4F6] border border-[#E5E5E5] px-space-xs rounded mb-space-md font-mono-spec text-[11px]">
+<div>
+<span class="text-[#737373] block text-[9px] uppercase">Weight</span>
+<span class="text-[#171717] font-medium">1.24 kg</span>
+</div>
+<div>
+<span class="text-[#737373] block text-[9px] uppercase">Battery Life</span>
+<span class="text-[#171717] font-medium">21.5 Hrs</span>
+</div>
+<div>
+<span class="text-[#737373] block text-[9px] uppercase">Thermals</span>
+<span class="text-[#171717] font-medium">Dual Mag-Lev</span>
+</div>
+</div>
+</div>
+<!-- Price & Customization Action Rail -->
+<div>
+<div class="flex items-baseline justify-between mb-space-sm">
+<div>
+<span class="font-headline-md text-headline-md font-semibold text-[#171717]">$1,499.00</span>
+<span class="font-mono-spec text-[11px] text-[#737373] ml-1">excl. VAT</span>
+</div>
+<div class="flex items-center gap-1 font-mono-spec text-[11px] text-[#737373]">
+<span class="material-symbols-outlined text-[14px] text-[#356AE6]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="text-[#171717] font-medium">4.9</span>
+<span class="text-[#737373]">(128)</span>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-space-xs">
+<button class="h-10 px-space-xs bg-[#F3F4F6] hover:bg-[#E5E5E5] text-[#171717] border border-[#E5E5E5] font-label-md text-label-md rounded transition-colors text-center">
+                    Specs Sheet
+                  </button>
+<button class="h-10 px-space-xs bg-[#242424] hover:bg-[#1a1a1a] text-white font-label-md text-label-md rounded transition-colors text-center">
+                    Customize &amp; Buy
+                  </button>
+</div>
+</div>
+</article>
+<!-- Card 2: Nexus Aerolite 16 Pro -->
+<article class="bg-white border border-[#E5E5E5] rounded p-space-md flex flex-col justify-between group transition-colors">
+<div>
+<div class="flex items-start justify-between mb-space-xs">
+<div>
+<span class="font-mono-spec text-[11px] text-[#356AE6] uppercase tracking-wider font-semibold">Flagship Peak Sustained</span>
+<h2 class="font-title-md text-title-md font-semibold text-[#171717] mt-0.5">Nexus Aerolite 16 Pro</h2>
+</div>
+<span class="px-space-xs py-0.5 bg-[#EAF1FF] text-[#356AE6] border border-[#356AE6]/20 font-mono-spec text-[11px] rounded font-medium">Ready to Ship</span>
+</div>
+<!-- Verified Spec String -->
+<p class="font-mono-spec text-mono-spec text-[#737373] mb-space-sm">
+                  16.2" Mini-LED • 64GB Unified • 2TB NVMe • M4 Max
+                </p>
+<!-- Product Canvas Image Presentation -->
+<div class="w-full h-56 bg-[#F3F4F6] border border-[#E5E5E5] rounded flex items-center justify-center p-space-md relative overflow-hidden mb-space-md">
+<img class="max-h-full max-w-full object-contain filter group-hover:scale-105 transition-transform duration-300" data-alt="High precision modern workstation laptop in space gray metal enclosure resting open in three-quarter perspective on a bright white neutral studio pedestal. The display shows razor thin bezels and an expansive precision force touch trackpad with dual side firing speaker grilles." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCQAU89718RAa_iN6lmj3vQZZx2PteWPChG7zSzqT2VMQdle32-SEatsOJRPHbhDrBHw9rAFFHXHpGoTUZ1SdCt0Cakc8pJMfXgPdHkoIxDq90G-2Bz8kvsNpTeEQhT-3E3LHtDog2INk7JmlLHcsJVZCkwW9BJf8FgbJzlVnV68SlGcQTHuz1T3z784myiGQFGG9Iw6VADLmVnjF3jD9B2tktywkrDr-9HXVgj8elg6EtbEF-BvfU"/>
+<span class="absolute bottom-2 left-2 font-mono-spec text-[10px] text-[#737373] bg-white/90 border border-[#E5E5E5] px-1 rounded">Vapor Chamber Active</span>
+</div>
+<!-- Key Metrics Metric List -->
+<div class="grid grid-cols-3 gap-2 py-space-xs bg-[#F3F4F6] border border-[#E5E5E5] px-space-xs rounded mb-space-md font-mono-spec text-[11px]">
+<div>
+<span class="text-[#737373] block text-[9px] uppercase">Memory Bandwidth</span>
+<span class="text-[#171717] font-medium">546 GB/s</span>
+</div>
+<div>
+<span class="text-[#737373] block text-[9px] uppercase">Display Peak</span>
+<span class="text-[#171717] font-medium">1,600 nits</span>
+</div>
+<div>
+<span class="text-[#737373] block text-[9px] uppercase">Ports</span>
+<span class="text-[#171717] font-medium">3x TB5, SD, HDMI</span>
+</div>
+</div>
+</div>
+<!-- Price & Customization Action Rail -->
+<div>
+<div class="flex items-baseline justify-between mb-space-sm">
+<div>
+<span class="font-headline-md text-headline-md font-semibold text-[#171717]">$2,199.00</span>
+<span class="font-mono-spec text-[11px] text-[#737373] ml-1">or $183/mo</span>
+</div>
+<div class="flex items-center gap-1 font-mono-spec text-[11px] text-[#737373]">
+<span class="material-symbols-outlined text-[14px] text-[#356AE6]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="text-[#171717] font-medium">5.0</span>
+<span class="text-[#737373]">(342)</span>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-space-xs">
+<button class="h-10 px-space-xs bg-[#F3F4F6] hover:bg-[#E5E5E5] text-[#171717] border border-[#E5E5E5] font-label-md text-label-md rounded transition-colors text-center">
+                    Specs Sheet
+                  </button>
+<button class="h-10 px-space-xs bg-[#356AE6] hover:bg-[#2554c7] text-white font-label-md text-label-md rounded transition-colors text-center font-medium">
+                    Order Configuration
+                  </button>
+</div>
+</div>
+</article>
+<!-- Card 3: Nexus Companion Studio Dock 8K -->
+<article class="bg-white border border-[#E5E5E5] rounded p-space-md flex flex-col justify-between group transition-colors">
+<div>
+<div class="flex items-start justify-between mb-space-xs">
+<div>
+<span class="font-mono-spec text-[11px] text-[#737373] uppercase tracking-wider">Modular Peripheral</span>
+<h2 class="font-title-md text-title-md font-semibold text-[#171717] mt-0.5">Nexus Studio Hub Pro</h2>
+</div>
+<span class="px-space-xs py-0.5 bg-[#F3F4F6] border border-[#E5E5E5] font-mono-spec text-[11px] text-[#171717] rounded">Express Hub</span>
+</div>
+<!-- Verified Spec String -->
+<p class="font-mono-spec text-mono-spec text-[#737373] mb-space-sm">
+                  Thunderbolt 5 • 140W Host Delivery • Dual 8K60Hz
+                </p>
+<!-- Product Canvas Image Presentation -->
+<div class="w-full h-56 bg-[#F3F4F6] border border-[#E5E5E5] rounded flex items-center justify-center p-space-md relative overflow-hidden mb-space-md">
+<img class="max-h-full max-w-full object-contain filter group-hover:scale-105 transition-transform duration-300" data-alt="A compact machined solid aluminum Thunderbolt dock accessory with precision milled front and rear ports, sitting on a pale stone table with clean geometric shadow, showcasing clean desktop audio and display integration." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCK7anqKMzSv86bEggUipVSr0VhLkl6VFmYk6SGEN785jpqG6Jj1ZMGbI8aeIcvK9ZZ8LIIRTWLh58GBjX4ZP68b3FbDCjK5jj5Omd8_5wHd4sLYDsbDAVHFKQjrrRF0O9hjZXda5wIT9TVw1vkfWCJxzzj8e1_nNmKehfkXwfEFbT_8YBXATXZU6pfwHKS8GGs-XMbRbna9tyf99-y_TXO2Us6gy1Rd5qwIHQ0yeB1Vsl8RO0rkhU"/>
+<span class="absolute bottom-2 left-2 font-mono-spec text-[10px] text-[#737373] bg-white/90 border border-[#E5E5E5] px-1 rounded">CNC Aluminum Chassis</span>
+</div>
+<!-- Key Metrics Metric List -->
+<div class="grid grid-cols-3 gap-2 py-space-xs bg-[#F3F4F6] border border-[#E5E5E5] px-space-xs rounded mb-space-md font-mono-spec text-[11px]">
+<div>
+<span class="text-[#737373] block text-[9px] uppercase">Transfer Speed</span>
+<span class="text-[#171717] font-medium">80 Gbps</span>
+</div>
+<div>
+<span class="text-[#737373] block text-[9px] uppercase">Card Slot</span>
+<span class="text-[#171717] font-medium">CFexpress B</span>
+</div>
+<div>
+<span class="text-[#737373] block text-[9px] uppercase">Ethernet</span>
+<span class="text-[#171717] font-medium">10 GbE RJ45</span>
+</div>
+</div>
+</div>
+<!-- Price & Customization Action Rail -->
+<div>
+<div class="flex items-baseline justify-between mb-space-sm">
+<div>
+<span class="font-headline-md text-headline-md font-semibold text-[#171717]">$199.00</span>
+<span class="font-mono-spec text-[11px] text-[#737373] ml-1">In Stock</span>
+</div>
+<div class="flex items-center gap-1 font-mono-spec text-[11px] text-[#737373]">
+<span class="material-symbols-outlined text-[14px] text-[#356AE6]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="text-[#171717] font-medium">4.8</span>
+<span class="text-[#737373]">(89)</span>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-space-xs">
+<button class="h-10 px-space-xs bg-[#F3F4F6] hover:bg-[#E5E5E5] text-[#171717] border border-[#E5E5E5] font-label-md text-label-md rounded transition-colors text-center">
+                    Compatibility
+                  </button>
+<button class="h-10 px-space-xs bg-[#242424] hover:bg-[#1a1a1a] text-white font-label-md text-label-md rounded transition-colors text-center">
+                    Add to Cart
+                  </button>
+</div>
+</div>
+</article>
+<!-- Card 4: Nexus Pro Sleeve 14" -->
+<article class="bg-white border border-[#E5E5E5] rounded p-space-md flex flex-col justify-between group transition-colors">
+<div>
+<div class="flex items-start justify-between mb-space-xs">
+<div>
+<span class="font-mono-spec text-[11px] text-[#737373] uppercase tracking-wider">Engineered Carry</span>
+<h2 class="font-title-md text-title-md font-semibold text-[#171717] mt-0.5">Nexus Armor Sleeve 14"</h2>
+</div>
+<span class="px-space-xs py-0.5 bg-[#F3F4F6] border border-[#E5E5E5] font-mono-spec text-[11px] text-[#171717] rounded">Waterproof</span>
+</div>
+<!-- Verified Spec String -->
+<p class="font-mono-spec text-mono-spec text-[#737373] mb-space-sm">
+                  1000D Cordura • Magnetic Auto-Latch • Air-Cushion Lining
+                </p>
+<!-- Product Canvas Image Presentation -->
+<div class="w-full h-56 bg-[#F3F4F6] border border-[#E5E5E5] rounded flex items-center justify-center p-space-md relative overflow-hidden mb-space-md">
+<img class="max-h-full max-w-full object-contain filter group-hover:scale-105 transition-transform duration-300" data-alt="A precision tailored black ballistic nylon laptop sleeve laying flat on a clean matte white surface, highlighting an embossed architectural typography logo, waterproof sealed zipper tape, and discreet magnetic closure." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAZVVSHM4vl8DrFAJGOIlyBeN4UfxWg_FilSR7NZdZcti7EOcP3VEslRRmpoek7QXPw34gkaQzvsVZfSAZa-1mFflQdvQPPAvq-5dPlFJjTPpx0wPq4YTm78RioKk3l6xT81wC4_s9lCfbnjndePB0iUblTpdFNef5PKTXNiVKCy348dk0m_jTncMXMd5-DxJMRpYcKuRxbgBhlWpqa7E6mUTcE0tkyk6fUDKy9CRp2cZIfieQb4EI"/>
+<span class="absolute bottom-2 left-2 font-mono-spec text-[10px] text-[#737373] bg-white/90 border border-[#E5E5E5] px-1 rounded">Fidlock Clasp</span>
+</div>
+<!-- Key Metrics Metric List -->
+<div class="grid grid-cols-3 gap-2 py-space-xs bg-[#F3F4F6] border border-[#E5E5E5] px-space-xs rounded mb-space-md font-mono-spec text-[11px]">
+<div>
+<span class="text-[#737373] block text-[9px] uppercase">Thickness</span>
+<span class="text-[#171717] font-medium">8.5 mm</span>
+</div>
+<div>
+<span class="text-[#737373] block text-[9px] uppercase">Impact Rating</span>
+<span class="text-[#171717] font-medium">MIL-STD-810H</span>
+</div>
+<div>
+<span class="text-[#737373] block text-[9px] uppercase">Warranty</span>
+<span class="text-[#171717] font-medium">Lifetime</span>
+</div>
+</div>
+</div>
+<!-- Price & Customization Action Rail -->
+<div>
+<div class="flex items-baseline justify-between mb-space-sm">
+<div>
+<span class="font-headline-md text-headline-md font-semibold text-[#171717]">$69.00</span>
+<span class="font-mono-spec text-[11px] text-[#737373] ml-1">Free Delivery</span>
+</div>
+<div class="flex items-center gap-1 font-mono-spec text-[11px] text-[#737373]">
+<span class="material-symbols-outlined text-[14px] text-[#356AE6]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="text-[#171717] font-medium">4.9</span>
+<span class="text-[#737373]">(64)</span>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-space-xs">
+<button class="h-10 px-space-xs bg-[#F3F4F6] hover:bg-[#E5E5E5] text-[#171717] border border-[#E5E5E5] font-label-md text-label-md rounded transition-colors text-center">
+                    Colorways (3)
+                  </button>
+<button class="h-10 px-space-xs bg-[#242424] hover:bg-[#1a1a1a] text-white font-label-md text-label-md rounded transition-colors text-center">
+                    Add to Cart
+                  </button>
+</div>
+</div>
+</article>
+</div>
+<!-- In-Grid Editorial Feature: Architecture & Thermal Advantage -->
+<section class="w-full bg-white border border-[#E5E5E5] rounded p-space-lg">
+<div class="grid grid-cols-1 md:grid-cols-12 gap-space-lg items-center">
+<div class="md:col-span-7 space-y-space-sm">
+<span class="font-mono-spec text-[11px] text-[#356AE6] font-semibold uppercase tracking-wider">Hardware Deep Dive</span>
+<h3 class="font-headline-md text-headline-md font-semibold text-[#171717]">Unified Silicon vs. Disaggregated Architectures</h3>
+<p class="font-body-md text-body-md text-[#737373]">
+                  Nexus Aerolite work units unify CPU compute, GPU acceleration, and Neural Engines onto a single contiguous silicon die with zero PCIe bus traversal latency. Large scale language models execute directly from high-bandwidth LPDDR5X memory without VRAM offloading penalties.
+                </p>
+<div class="flex flex-wrap gap-space-md pt-space-xs font-mono-spec text-mono-spec">
+<div class="flex items-center gap-2 text-[#171717]">
+<span class="material-symbols-outlined text-[16px] text-[#356AE6]">check_circle</span>
+<span>Zero Memory Copying</span>
+</div>
+<div class="flex items-center gap-2 text-[#171717]">
+<span class="material-symbols-outlined text-[16px] text-[#356AE6]">check_circle</span>
+<span>8K ProRes Playback x 18 Streams</span>
+</div>
+<div class="flex items-center gap-2 text-[#171717]">
+<span class="material-symbols-outlined text-[16px] text-[#356AE6]">check_circle</span>
+<span>28-Hour Continuous Code Compilation</span>
+</div>
+</div>
+</div>
+<!-- Interactive Comparative Spec Matrix Mini-Widget -->
+<div class="md:col-span-5 bg-[#F3F4F6] border border-[#E5E5E5] p-space-md rounded space-y-space-sm font-mono-spec text-[12px]">
+<div class="flex justify-between border-b border-[#E5E5E5] pb-2 font-semibold">
+<span class="text-[#737373]">Metric</span>
+<span class="text-[#171717]">Nexus M4 Max</span>
+<span class="text-[#737373]">Standard x86 Workstation</span>
+</div>
+<div class="flex justify-between border-b border-[#E5E5E5] pb-1">
+<span class="text-[#737373]">Bandwidth</span>
+<span class="text-[#356AE6] font-medium">546 GB/s</span>
+<span class="text-[#171717]">96 GB/s</span>
+</div>
+<div class="flex justify-between border-b border-[#E5E5E5] pb-1">
+<span class="text-[#737373]">Load Acoustic</span>
+<span class="text-[#356AE6] font-medium">32 dBA</span>
+<span class="text-[#171717]">54 dBA</span>
+</div>
+<div class="flex justify-between">
+<span class="text-[#737373]">Idle Draw</span>
+<span class="text-[#356AE6] font-medium">4.2 W</span>
+<span class="text-[#171717]">19.5 W</span>
+</div>
+<div class="pt-space-xs border-t border-[#E5E5E5]">
+<a class="inline-flex items-center gap-1 text-[#356AE6] font-body-sm text-body-sm hover:underline font-medium" href="#">
+<span>Read Full Thermal Architecture Whitepaper</span>
+<span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+</a>
+</div>
+</div>
+</div>
+</section>
+<!-- Technical Spec Comparison Drawer Banner -->
+<div class="w-full bg-white border border-[#E5E5E5] rounded p-space-md flex flex-col sm:flex-row items-center justify-between gap-space-md">
+<div class="flex items-center gap-space-sm">
+<span class="w-10 h-10 rounded bg-[#F3F4F6] border border-[#E5E5E5] flex items-center justify-center text-[#171717]">
+<span class="material-symbols-outlined text-[20px]">difference</span>
+</span>
+<div>
+<h4 class="font-title-md text-title-md font-semibold text-[#171717]">Need multi-unit hardware deployment?</h4>
+<p class="font-body-sm text-body-sm text-[#737373]">Configure enterprise asset tagging, pre-provisioned SSH keys, and zero-touch MDM enrollment.</p>
+</div>
+</div>
+<div class="flex items-center gap-space-xs shrink-0 w-full sm:w-auto">
+<button class="h-10 px-space-md bg-[#F3F4F6] hover:bg-[#E5E5E5] text-[#171717] border border-[#E5E5E5] font-label-md text-label-md rounded transition-colors flex-1 sm:flex-none">
+                Enterprise Quote
+              </button>
+<button class="h-10 px-space-md bg-[#242424] hover:bg-[#1a1a1a] text-white font-label-md text-label-md rounded transition-colors flex-1 sm:flex-none">
+                B2B Portal Login
+              </button>
+</div>
+</div>
+<!-- Pagination & SKU Counter -->
+<div class="flex items-center justify-between pt-space-md border-t border-[#E5E5E5]">
+<span class="font-mono-spec text-mono-spec text-[#737373]">Displaying 1–4 of 14 Available System SKUs</span>
+<div class="flex items-center gap-1 font-mono-spec text-mono-spec">
+<button class="w-8 h-8 rounded bg-white border border-[#E5E5E5] text-[#737373] hover:text-[#171717] flex items-center justify-center">
+<span class="material-symbols-outlined text-[18px]">chevron_left</span>
+</button>
+<button class="w-8 h-8 rounded bg-[#356AE6] text-white flex items-center justify-center font-medium">1</button>
+<button class="w-8 h-8 rounded bg-white border border-[#E5E5E5] hover:bg-[#F3F4F6] text-[#171717] flex items-center justify-center">2</button>
+<button class="w-8 h-8 rounded bg-white border border-[#E5E5E5] hover:bg-[#F3F4F6] text-[#171717] flex items-center justify-center">3</button>
+<button class="w-8 h-8 rounded bg-white border border-[#E5E5E5] text-[#737373] hover:text-[#171717] flex items-center justify-center">
+<span class="material-symbols-outlined text-[18px]">chevron_right</span>
+</button>
+</div>
+</div>
+</main>
+</div>
+</div>
+</section>
+</div></main><footer class="w-full bg-[#242424] text-white border-t border-[#242424]"><div class="max-w-7xl mx-auto px-margin-tablet lg:px-margin pt-space-2xl pb-space-xl"><div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-space-xl pb-space-2xl border-b border-white/10"><div class="lg:col-span-2 pr-space-xl"><div class="flex items-center gap-space-xs mb-space-sm"><span class="font-title-md text-title-md font-semibold text-white uppercase tracking-tight">Nexus</span><span class="font-mono-spec text-mono-spec text-white/50 uppercase">Dispatch</span></div><p class="font-body-sm text-body-sm text-white/70 mb-space-md max-w-sm">Receive technical architectural briefs, firmware updates, and limited hardware production run announcements.</p><form class="flex items-center max-w-md gap-space-xs mb-space-xs"><input class="h-10 flex-1 px-space-sm bg-white/10 border border-white/20 text-white placeholder-white/40 font-body-sm text-body-sm focus:outline-none focus:border-[#356AE6] rounded" placeholder="engineer@domain.com" type="email"/><button class="h-10 px-space-md bg-[#356AE6] hover:bg-[#2554c7] text-white font-label-md text-label-md transition-colors rounded font-medium" type="button">Subscribe</button></form><span class="font-mono-spec text-[11px] text-white/50">Zero marketing spam. Strict engineering dispatch only.</span></div><div><h4 class="font-label-caps text-label-caps uppercase text-white mb-space-md tracking-wider">Hardware Catalog</h4><ul class="space-y-space-sm font-body-sm text-body-sm text-white/70"><li><a class="hover:text-white transition-colors" data-path="laptops" href="#">Precision Laptops</a></li><li><a class="hover:text-white transition-colors" data-path="displays" href="#">Studio Displays</a></li><li><a class="hover:text-white transition-colors" data-path="audio" href="#">Acoustic Monitors</a></li><li><a class="hover:text-white transition-colors" data-path="wearables" href="#">Biometric Modules</a></li><li><a class="hover:text-white transition-colors" data-path="accessories" href="#">Docking Hardware</a></li></ul></div><div><h4 class="font-label-caps text-label-caps uppercase text-white mb-space-md tracking-wider">Support &amp; Care</h4><ul class="space-y-space-sm font-body-sm text-body-sm text-white/70"><li><a class="hover:text-white transition-colors" data-path="customer-care" href="#">Customer Care</a></li><li><a class="hover:text-white transition-colors" data-path="order-tracking" href="#">Order Tracking</a></li><li><a class="hover:text-white transition-colors" data-path="warranty" href="#">Hardware Warranty</a></li><li><a class="hover:text-white transition-colors" data-path="trade-in" href="#">Trade-In Program</a></li><li><a class="hover:text-white transition-colors" data-path="store-locator" href="#">Flagship Locator</a></li></ul></div><div><h4 class="font-label-caps text-label-caps uppercase text-white mb-space-md tracking-wider">Governance</h4><ul class="space-y-space-sm font-body-sm text-body-sm text-white/70"><li><a class="hover:text-white transition-colors" data-path="compliance" href="#">Compliance &amp; Certs</a></li><li><a class="hover:text-white transition-colors" data-path="privacy" href="#">Privacy Architecture</a></li><li><a class="hover:text-white transition-colors" data-path="terms" href="#">Terms of Supply</a></li><li><a class="hover:text-white transition-colors" data-path="sustainability" href="#">Recycling Protocol</a></li><li><a class="hover:text-white transition-colors" data-path="security" href="#">Security Advisories</a></li></ul></div></div><div class="pt-space-lg flex flex-col md:flex-row items-center justify-between gap-space-md"><div class="flex items-center gap-space-md font-mono-spec text-mono-spec text-white/50"><span>© 2025 Nexus Electronics Corp.</span><span>All rights reserved.</span><span>Ref: NX-8840-SPEC</span></div><div class="flex items-center gap-space-lg font-body-sm text-body-sm text-white/70"><div class="flex items-center gap-space-xs"><span class="material-symbols-outlined text-[16px] text-white/50">public</span><select class="bg-transparent font-mono-spec text-mono-spec text-white/70 focus:outline-none cursor-pointer"><option class="bg-[#242424] text-white">USD ($)</option><option class="bg-[#242424] text-white">EUR (€)</option><option class="bg-[#242424] text-white">GBP (£)</option><option class="bg-[#242424] text-white">JPY (¥)</option></select></div><div class="flex items-center gap-space-xs"><span class="material-symbols-outlined text-[16px] text-white/50">translate</span><select class="bg-transparent font-mono-spec text-mono-spec text-white/70 focus:outline-none cursor-pointer"><option class="bg-[#242424] text-white">English (US)</option><option class="bg-[#242424] text-white">Deutsch</option><option class="bg-[#242424] text-white">Japanese</option></select></div></div></div></div></footer></body></html>
