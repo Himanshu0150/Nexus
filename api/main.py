@@ -13,7 +13,7 @@ from db.postgres_queries import (
     create_user, update_user_profile, get_user_addresses,
     add_user_address, delete_user_address, set_default_address
 )
-from db.chroma_queries import get_similar_product_ids
+from db.chroma_queries import get_similar_product_ids, query_by_text
 
 app = FastAPI()
 
@@ -164,9 +164,33 @@ def set_default_address_endpoint(user_id: int, address_id: int):
 
 # --- Products Endpoints ---
 @app.get("/products")
-def get_products(category: Optional[str] = None, q: Optional[str] = None):
+def get_products(category: Optional[str] = None, q: Optional[str] = None, mode: Optional[str] = "keyword"):
+    if q and mode == "vector":
+        log_request("GET /products", "ChromaDB Vector", f"q={q}")
+        pids = query_by_text(q, limit=25)
+        if not pids:
+            return []
+        products = get_products_by_ids(pids)
+        prod_map = {p["product_id"]: p for p in products}
+        res = [prod_map[pid] for pid in pids if pid in prod_map]
+        if category:
+            res = [p for p in res if p.get("category") == category]
+        return res
+    
     log_request("GET /products", "Mongo", f"category={category}, q={q}")
-    return search_products(category, q, 100)
+    res = search_products(category, q, 100)
+    # If standard keyword search on MongoDB returned 0 results but the user typed a query,
+    # automatically perform vector semantic search as an intelligent fallback
+    if not res and q:
+        log_request("GET /products (fallback)", "ChromaDB Vector", f"q={q}")
+        pids = query_by_text(q, limit=25)
+        if pids:
+            products = get_products_by_ids(pids)
+            prod_map = {p["product_id"]: p for p in products}
+            res = [prod_map[pid] for pid in pids if pid in prod_map]
+            if category:
+                res = [p for p in res if p.get("category") == category]
+    return res
 
 @app.get("/products/{product_id}")
 def get_product(product_id: str):

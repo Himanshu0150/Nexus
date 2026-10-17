@@ -191,8 +191,10 @@ ChromaDB provides an embedded vector database index:
 - **Model**: `sentence-transformers/all-MiniLM-L6-v2`
 - **Embedding Space**: 384-dimensional dense vectors
 - **Similarity Metric**: Cosine Distance
-- **Pre-computed Index**: [`scripts/build_vectors.py`](file:///Users/sanket/Documents/GitHub/AD/scripts/build_vectors.py) encodes document text `"{name} - {description}"` and stores them in local persistent storage (`chroma_db/`).
-- **Query Flow**: `GET /products/{id}/similar` extracts the target embedding, performs a nearest-neighbor query, and returns the top 5 semantically related items.
+- **Pre-computed Index**: [`scripts/build_vectors.py`](file:///scripts/build_vectors.py) encodes document text `"{name} - {description}"` and stores them in local persistent storage (`chroma_db/`).
+- **Query Operations**:
+  - **Item-to-Item Similarity**: `GET /products/{id}/similar` extracts the target product's 384-dim embedding via `collection.get(ids=[id])`, runs `collection.query(query_embeddings=...)`, and returns the 5 nearest neighbors.
+  - **Natural Language Semantic Search**: `GET /products?q={query}&mode=vector` encodes freeform text directly into dense vectors using `collection.query(query_texts=[query_text], n_results=25)` to find conceptual matches without requiring exact keyword overlaps.
 
 ---
 
@@ -201,7 +203,8 @@ ChromaDB provides an embedded vector database index:
 Every interaction routes through a query auditor displayed on the UI under **📊 Database Telemetry**:
 - `POST /orders` $\to$ PostgreSQL ACID transaction log
 - `GET /products` $\to$ MongoDB regex filter & index scan
-- `GET /products/{id}/similar` $\to$ ChromaDB vector cosine distance
+- `GET /products?mode=vector` $\to$ ChromaDB vector cosine distance text search
+- `GET /products/{id}/similar` $\to$ ChromaDB vector cosine distance nearest neighbors
 - `GET /debug/requests` $\to$ In-memory rolling telemetry log
 
 ---
@@ -378,7 +381,7 @@ python scripts/similar_vs_keyword.py
 | `POST` | `/users/{id}/addresses` | PostgreSQL | Save a new delivery destination with default flag |
 | `DELETE` | `/users/{id}/addresses/{aid}` | PostgreSQL | Remove a saved shipping address |
 | `PUT` | `/users/{id}/addresses/{aid}/default`| PostgreSQL | Set an address as primary default |
-| `GET` | `/products` | MongoDB | Search catalog with category filtering and regex name search |
+| `GET` | `/products` | MongoDB + ChromaDB | Search catalog with category filtering, regex keyword search, or AI vector semantic search (`mode=vector`) |
 | `GET` | `/products/{id}` | Mongo + Postgres | Retrieve polymorphic product document joined with live stock |
 | `GET` | `/products/{id}/image` | MongoDB | Stream in-database binary SVG product graphic |
 | `GET` | `/products/{id}/similar` | ChromaDB + Mongo | 5-nearest-neighbor semantic vector recommendations |

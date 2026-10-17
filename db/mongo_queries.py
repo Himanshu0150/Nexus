@@ -26,13 +26,13 @@ def insert_many_products(products):
     db = client["shop"]
     db.products.insert_many(products)
 
-# Find products by category and name regex
+# Find products by category and text regex in name or description
 def search_products(category=None, q=None, limit=20):
     client = get_mongo_client()
     db = client["shop"]
     filter_doc = {}
     if category: filter_doc['category'] = category
-    if q: filter_doc['name'] = {'$regex': re.compile(q, re.IGNORECASE)}
+    if q: filter_doc['$or'] = [{'name': {'$regex': q, '$options': 'i'}}, {'description': {'$regex': q, '$options': 'i'}}]
     return list(db.products.find(filter_doc, {'_id': 0}).sort('price', 1).limit(limit))
 
 # Find a single product by ID

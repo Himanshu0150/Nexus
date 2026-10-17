@@ -556,7 +556,7 @@ if st.session_state.page == "Catalog":
     </div>
     """, unsafe_allow_html=True)
 
-    cat_col, search_col = st.columns([1, 1])
+    cat_col, search_col, mode_col = st.columns([1.2, 1.8, 1])
     with cat_col:
         categories = ["All", "laptops", "phones", "shoes", "books"]
         cat_labels = {
@@ -575,7 +575,14 @@ if st.session_state.page == "Catalog":
     with search_col:
         search_q = st.text_input(
             "Search Catalog",
-            placeholder="Search by product name, model, or specs...",
+            placeholder="Search by keywords or describe what you need...",
+            label_visibility="collapsed"
+        )
+    with mode_col:
+        search_mode = st.selectbox(
+            "Search Mode",
+            ["vector", "keyword"],
+            format_func=lambda x: "🔮 AI Vector Search" if x == "vector" else "🔍 Exact Keyword",
             label_visibility="collapsed"
         )
     
@@ -584,6 +591,7 @@ if st.session_state.page == "Catalog":
         query_parts.append(f"category={urllib.parse.quote(category)}")
     if search_q:
         query_parts.append(f"q={urllib.parse.quote(search_q)}")
+        query_parts.append(f"mode={search_mode}")
     
     qs = "&".join(query_parts)
     products = fetch_json(f"/products?{qs}" if qs else "/products") or []
