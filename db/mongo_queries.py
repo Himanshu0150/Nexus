@@ -5,9 +5,15 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+_mongo_client = None
+
 def get_mongo_client():
-    uri = os.environ.get("MONGO_URI") or "mongodb://localhost:27017/"
-    return MongoClient(uri)
+    global _mongo_client
+    if _mongo_client is None:
+        uri = os.environ.get("MONGO_URI") or "mongodb://localhost:27017/"
+        _mongo_client = MongoClient(uri, maxPoolSize=50, connectTimeoutMS=2000)
+    return _mongo_client
+
 
 # Check mongo connection
 def check_connection():

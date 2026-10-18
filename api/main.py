@@ -278,7 +278,12 @@ def get_product_image(product_id: str):
     doc = get_product_image_data(product_id)
     if not doc or not doc.get("image_data"):
         raise HTTPException(status_code=404, detail="Image not found")
-    return Response(content=bytes(doc["image_data"]), media_type=doc.get("image_mime", "image/jpeg"))
+    return Response(
+        content=bytes(doc["image_data"]),
+        media_type=doc.get("image_mime", "image/svg+xml"),
+        headers={"Cache-Control": "public, max-age=86400"}
+    )
+
 
 @app.get("/products/{product_id}/similar")
 def get_similar(product_id: str):

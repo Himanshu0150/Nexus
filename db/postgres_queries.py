@@ -1,13 +1,30 @@
 import os
 import psycopg2
+from psycopg2 import pool
 from psycopg2.extras import RealDictCursor
 from dotenv import load_dotenv
+from contextlib import contextmanager
 
 load_dotenv()
 
+_pg_pool = None
+
+def _get_pg_pool():
+    global _pg_pool
+    if _pg_pool is None or _pg_pool.closed:
+        uri = os.environ.get("POSTGRES_URI") or "postgresql://postgres:postgres@localhost:5432/postgres"
+        _pg_pool = pool.ThreadedConnectionPool(minconn=1, maxconn=25, dsn=uri, connect_timeout=3)
+    return _pg_pool
+
+@contextmanager
 def get_pg_connection():
-    uri = os.environ.get("POSTGRES_URI") or "postgresql://postgres:postgres@localhost:5432/postgres"
-    return psycopg2.connect(uri, connect_timeout=2)
+    p = _get_pg_pool()
+    conn = p.getconn()
+    try:
+        yield conn
+    finally:
+        p.putconn(conn)
+
 
 # Check postgres connection
 def check_connection():
