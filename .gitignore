@@ -4,3 +4,12 @@ __pycache__/
 .env
 chroma_db/
 .DS_Store
+.env
+.env.*
+!.env.example
+venv/
+venv-clean/
+venv312/
+__pycache__/
+*.pyc
+node_modules/

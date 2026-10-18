@@ -10,7 +10,9 @@ from db.postgres_queries import (
     delete_all_inventory, delete_all_users, insert_demo_user, add_user_address,
     insert_inventory_batch
 )
-from db.mongo_queries import delete_all_products, insert_many_products
+from db.mongo_queries import (
+    delete_all_products, insert_many_products, create_category_price_index
+)
 
 # Use fixed random seed for reproducible data
 random.seed(42)
@@ -180,6 +182,8 @@ def main():
 
     insert_inventory_batch(inventory_data)
     insert_many_products(products_to_insert)
+    create_category_price_index()
+    print("Created compound index (category: 1, price: 1) adhering to ESR rule.")
 
     print("Generating product SVG images in MongoDB...")
     from scripts.fetch_images import main as seed_images

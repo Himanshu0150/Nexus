@@ -7,7 +7,7 @@ load_dotenv()
 
 def get_pg_connection():
     uri = os.environ.get("POSTGRES_URI") or "postgresql://postgres:postgres@localhost:5432/postgres"
-    return psycopg2.connect(uri)
+    return psycopg2.connect(uri, connect_timeout=2)
 
 # Check postgres connection
 def check_connection():
@@ -179,6 +179,12 @@ def get_inventory_stock(product_id):
         cur.execute("SELECT stock FROM inventory WHERE product_id = %s;", (product_id,))
         return cur.fetchone()
 
+# Get all inventory stock levels
+def get_all_inventory():
+    with get_pg_connection() as conn, conn.cursor(cursor_factory=RealDictCursor) as cur:
+        cur.execute("SELECT product_id, stock FROM inventory;")
+        return cur.fetchall()
+
 # Get orders by user ID
 def get_orders_by_user(user_id):
     with get_pg_connection() as conn, conn.cursor(cursor_factory=RealDictCursor) as cur:
@@ -234,3 +240,10 @@ def get_random_product_id():
         cur.execute("SELECT product_id FROM inventory LIMIT 1;")
         row = cur.fetchone()
         return row['product_id'] if isinstance(row, dict) else row[0]
+
+# Fetch product IDs with available inventory stock greater than zero
+def get_in_stock_product_ids():
+    with get_pg_connection() as conn, conn.cursor() as cur:
+        cur.execute("SELECT product_id FROM inventory WHERE stock > 0;")
+        return [row[0] for row in cur.fetchall()]
+

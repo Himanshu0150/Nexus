@@ -6,12 +6,16 @@ from typing import List, Optional
 import os
 import datetime
 
-from db.mongo_queries import search_products, get_product_by_id, get_products_by_ids, get_product_image_data
+from db.mongo_queries import (
+    search_products, get_product_by_id, get_products_by_ids,
+    get_product_image_data, get_products_with_ratings, get_catalog_facets
+)
 from db.postgres_queries import (
-    get_inventory_stock, place_order_transaction, get_orders_by_user,
+    get_inventory_stock, get_all_inventory, place_order_transaction, get_orders_by_user,
     get_order_items, get_users, get_user_by_email, get_user_by_id,
     create_user, update_user_profile, get_user_addresses,
-    add_user_address, delete_user_address, set_default_address
+    add_user_address, delete_user_address, set_default_address,
+    get_in_stock_product_ids
 )
 from db.chroma_queries import get_similar_product_ids, query_by_text
 
@@ -164,43 +168,109 @@ def set_default_address_endpoint(user_id: int, address_id: int):
 
 # --- Products Endpoints ---
 @app.get("/products")
-def get_products(category: Optional[str] = None, q: Optional[str] = None, mode: Optional[str] = "keyword"):
+def get_products(
+    category: Optional[str] = None,
+    q: Optional[str] = None,
+    mode: Optional[str] = "keyword",
+    min_rating: Optional[float] = None,
+    min_price: Optional[float] = None,
+    max_price: Optional[float] = None,
+    sort: Optional[str] = "price_asc",
+    in_stock: Optional[bool] = False
+):
+    sort_dir = -1 if sort in ["price_desc", "desc", "high_to_low"] else 1
+
+    # Polyglot query resolution: query PostgreSQL inventory for valid in-stock IDs
+    in_stock_ids = None
+    if in_stock:
+        try:
+            in_stock_ids = get_in_stock_product_ids()
+        except Exception:
+            in_stock_ids = []
+
     if q and mode == "vector":
-        log_request("GET /products", "ChromaDB Vector", f"q={q}")
+        log_request("GET /products", "ChromaDB Vector", f"q={q}, min_rating={min_rating}, in_stock={in_stock}")
         pids = query_by_text(q, limit=25)
         if not pids:
             return []
-        products = get_products_by_ids(pids)
-        prod_map = {p["product_id"]: p for p in products}
+        if in_stock and in_stock_ids is not None:
+            pids = [pid for pid in pids if pid in in_stock_ids]
+            if not pids:
+                return []
+        res = get_products_with_ratings(
+            category=category, min_rating=min_rating, product_ids=pids, limit=len(pids),
+            min_price=min_price, max_price=max_price, sort_dir=sort_dir
+        )
+        prod_map = {p["product_id"]: p for p in res}
         res = [prod_map[pid] for pid in pids if pid in prod_map]
-        if category:
-            res = [p for p in res if p.get("category") == category]
-        return res
+    else:
+        log_request("GET /products", "Mongo Aggregation", f"category={category}, q={q}, min_rating={min_rating}, price=[{min_price},{max_price}], sort={sort}, in_stock={in_stock}")
+        target_pids = in_stock_ids if in_stock else None
+        res = get_products_with_ratings(
+            category=category, q=q, min_rating=min_rating, limit=100,
+            min_price=min_price, max_price=max_price, sort_dir=sort_dir,
+            product_ids=target_pids
+        )
+        # If standard keyword search on MongoDB returned 0 results but the user typed a query,
+        # automatically perform vector semantic search as an intelligent fallback
+        if not res and q:
+            log_request("GET /products (fallback)", "ChromaDB Vector", f"q={q}, min_rating={min_rating}, in_stock={in_stock}")
+            pids = query_by_text(q, limit=25)
+            if pids:
+                if in_stock and in_stock_ids is not None:
+                    pids = [pid for pid in pids if pid in in_stock_ids]
+                if pids:
+                    res = get_products_with_ratings(
+                        category=category, min_rating=min_rating, product_ids=pids, limit=len(pids),
+                        min_price=min_price, max_price=max_price, sort_dir=sort_dir
+                    )
+                    prod_map = {p["product_id"]: p for p in res}
+                    res = [prod_map[pid] for pid in pids if pid in prod_map]
     
-    log_request("GET /products", "Mongo", f"category={category}, q={q}")
-    res = search_products(category, q, 100)
-    # If standard keyword search on MongoDB returned 0 results but the user typed a query,
-    # automatically perform vector semantic search as an intelligent fallback
-    if not res and q:
-        log_request("GET /products (fallback)", "ChromaDB Vector", f"q={q}")
-        pids = query_by_text(q, limit=25)
-        if pids:
-            products = get_products_by_ids(pids)
-            prod_map = {p["product_id"]: p for p in products}
-            res = [prod_map[pid] for pid in pids if pid in prod_map]
-            if category:
-                res = [p for p in res if p.get("category") == category]
+    # Enrich with live PostgreSQL inventory stock (defensive fallback if Postgres is unreachable)
+    try:
+        inv_rows = get_all_inventory()
+        stock_map = {row["product_id"]: row["stock"] for row in inv_rows}
+    except Exception:
+        stock_map = {}
+    for p in res:
+        p_stock = stock_map.get(p["product_id"])
+        if p_stock is None:
+            p_stock = p.get("stock") or p.get("stockQuantity") or p.get("quantity") or p.get("inventory") or 0
+        p["stock"] = int(p_stock)
+        p["stockQuantity"] = p["stock"]
+        p["quantity"] = p["stock"]
     return res
+
+@app.get("/products/facets")
+def get_facets():
+    log_request("GET /products/facets", "Mongo $facet", "all")
+    return get_catalog_facets()
 
 @app.get("/products/{product_id}")
 def get_product(product_id: str):
     log_request(f"GET /products/{product_id}", "Mongo+Postgres", f"id={product_id}")
-    prod = get_product_by_id(product_id)
-    if not prod:
-        raise HTTPException(status_code=404, detail="Product not found")
+    prods = get_products_with_ratings(product_ids=[product_id], limit=1)
+    if prods:
+        prod = prods[0]
+        raw_doc = get_product_by_id(product_id)
+        if raw_doc and "reviews" in raw_doc:
+            prod["reviews"] = raw_doc["reviews"]
+    else:
+        prod = get_product_by_id(product_id)
+        if not prod:
+            raise HTTPException(status_code=404, detail="Product not found")
+        prod["avg_rating"] = 0.0
+        prod["review_count"] = 0
     
-    stock_record = get_inventory_stock(product_id)
-    prod['stock'] = stock_record['stock'] if stock_record else 0
+    try:
+        stock_record = get_inventory_stock(product_id)
+        prod['stock'] = int(stock_record['stock']) if stock_record else 0
+    except Exception:
+        p_stock = prod.get('stock') or prod.get('stockQuantity') or prod.get('quantity') or prod.get('inventory') or 0
+        prod['stock'] = int(p_stock)
+    prod['stockQuantity'] = prod['stock']
+    prod['quantity'] = prod['stock']
     return prod
 
 @app.get("/products/{product_id}/image")

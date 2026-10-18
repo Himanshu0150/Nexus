@@ -47,11 +47,17 @@ def get_products_by_ids(product_ids):
     db = client["shop"]
     return list(db.products.find({'product_id': {'$in': product_ids}}, {'_id': 0}))
 
-# Explain search query performance
-def explain_search_performance(category):
+# Explain search query performance under the ESR rule
+def explain_search_performance(category="laptops", sort_dir=1, min_price=None, max_price=None):
     client = get_mongo_client()
     db = client["shop"]
-    return db.products.find({"category": category}).sort("price", 1).explain()["executionStats"]
+    query = {"category": category}
+    if min_price is not None or max_price is not None:
+        price_cond = {}
+        if min_price is not None: price_cond["$gte"] = float(min_price)
+        if max_price is not None: price_cond["$lte"] = float(max_price)
+        query["price"] = price_cond
+    return db.products.find(query).sort("price", sort_dir).explain()["executionStats"]
 
 # Create an index for category and price
 def create_category_price_index():
@@ -88,3 +94,89 @@ def get_product_image_data(product_id):
     client = get_mongo_client()
     db = client["shop"]
     return db.products.find_one({"product_id": product_id}, {"_id": 0, "image_data": 1, "image_mime": 1})
+
+# Compute dynamic average ratings and review counts via MongoDB aggregation pipeline
+def get_products_with_ratings(category=None, q=None, min_rating=None, limit=100, product_ids=None, min_price=None, max_price=None, sort_dir=1):
+    client = get_mongo_client()
+    db = client["shop"]
+    pipeline = []
+    match_filter = {}
+    if product_ids is not None:
+        match_filter["product_id"] = {"$in": product_ids}
+    if category and category != "All":
+        match_filter["category"] = category
+    if q:
+        match_filter["$or"] = [
+            {"name": {"$regex": q, "$options": "i"}},
+            {"description": {"$regex": q, "$options": "i"}}
+        ]
+    price_cond = {}
+    if min_price is not None: price_cond["$gte"] = float(min_price)
+    if max_price is not None: price_cond["$lte"] = float(max_price)
+    if price_cond:
+        match_filter["price"] = price_cond
+    if match_filter:
+        pipeline.append({"$match": match_filter})
+    pipeline.append({"$unwind": {"path": "$reviews", "preserveNullAndEmptyArrays": True}})
+    pipeline.append({
+        "$group": {
+            "_id": "$product_id",
+            "product_id": {"$first": "$product_id"},
+            "name": {"$first": "$name"},
+            "category": {"$first": "$category"},
+            "price": {"$first": "$price"},
+            "description": {"$first": "$description"},
+            "attributes": {"$first": "$attributes"},
+            "image_url": {"$first": "$image_url"},
+            "avg_rating": {"$avg": "$reviews.rating"},
+            "review_count": {"$sum": {"$cond": [{"$gt": ["$reviews.rating", 0]}, 1, 0]}}
+        }
+    })
+    if min_rating is not None and float(min_rating) > 0:
+        pipeline.append({"$match": {"avg_rating": {"$gte": float(min_rating)}}})
+    pipeline.append({
+        "$project": {
+            "_id": 0,
+            "product_id": 1,
+            "name": 1,
+            "category": 1,
+            "price": 1,
+            "description": 1,
+            "attributes": 1,
+            "image_url": 1,
+            "avg_rating": {"$round": [{"$ifNull": ["$avg_rating", 0.0]}, 1]},
+            "review_count": 1
+        }
+    })
+    pipeline.append({"$sort": {"price": sort_dir}})
+    pipeline.append({"$limit": limit})
+    return list(db.products.aggregate(pipeline))
+
+aggregate_product_ratings = get_products_with_ratings
+
+# Compute category counts and price distribution buckets in a single roundtrip via $facet
+def get_catalog_facets():
+    client = get_mongo_client()
+    db = client["shop"]
+    pipeline = [{
+        "$facet": {
+            "categories": [{"$sortByCount": "$category"}],
+            "price_buckets": [{
+                "$bucket": {
+                    "groupBy": "$price",
+                    "boundaries": [0, 50, 200, 1000],
+                    "default": "1000+",
+                    "output": {"count": {"$sum": 1}}
+                }
+            }]
+        }
+    }]
+    res = list(db.products.aggregate(pipeline))
+    if not res:
+        return {"categories": [], "price_buckets": []}
+    facets = res[0]
+    label_map = {0: "Under $50", 50: "$50-$200", 200: "$200-$1000", "1000+": "$1000+"}
+    for b in facets.get("price_buckets", []):
+        b["label"] = label_map.get(b["_id"], str(b["_id"]))
+    return facets
+

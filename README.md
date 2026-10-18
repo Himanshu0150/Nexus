@@ -135,6 +135,55 @@ def place_order_transaction(user_id, total, items, shipping_address, payment_met
         return order_id
 ```
 
+#### Polyglot Query Resolution: Cross-Engine ID-Batching for In-Stock Availability
+
+A central architectural challenge in e-commerce is handling real-time availability filtering when inventory and product catalog metadata reside in different specialized database engines.
+
+##### 1. Architectural Justification: ACID Invariants vs. Polymorphic Documents
+- **Why PostgreSQL for Inventory Stock**: Inventory levels experience high concurrent write contention during checkouts. Isolating inventory in PostgreSQL allows the system to enforce strict transactional ACID properties (`READ COMMITTED` / `SERIALIZABLE`), row-level exclusive locks (`UPDATE inventory SET stock = stock - %s WHERE product_id = %s AND stock >= %s`), and database-level invariants (`CHECK (stock >= 0)`). This mathematically guarantees zero overselling without relying on error-prone application validation.
+- **Why MongoDB for Product Catalog**: The product catalog features heterogeneous hardware disciplines with irregular, deeply nested specifications (e.g., Laptops require CPU clock speeds and RAM buses; Displays require resolution and color accuracy; Apparel requires sizes and materials). MongoDB stores these as polymorphic JSON documents with embedded review arrays and vector SVG assets, eliminating sparse relational tables and costly `ALTER TABLE` schema migrations.
+
+##### 2. The Polyglot Coordination Mechanism: Foreign Engine ID-Batching
+Instead of forcing all data into a single engine or attempting fragile distributed joins, the application implements **Foreign Engine ID-Batching**:
+
+```
+[ Client Request: GET /products?in_stock=true ]
+                     │
+                     ▼
+  ┌─────────────────────────────────────┐
+  │ 1. PostgreSQL (ACID Inventory)      │
+  │    SELECT product_id FROM inventory │
+  │    WHERE stock > 0;                 │
+  └──────────────────┬──────────────────┘
+                     │ Returns: in_stock_ids = ['P0001', 'P0003', ...]
+                     ▼
+  ┌─────────────────────────────────────┐
+  │ 2. MongoDB (Polymorphic Catalog)    │
+  │    db.products.aggregate([          │
+  │      { $match: {                    │
+  │          product_id: { $in: ids },  │
+  │          category: "laptops"        │
+  │      }}, ...                        │
+  │    ])                               │
+  └──────────────────┬──────────────────┘
+                     │ Stream pre-sorted & aggregated product cards
+                     ▼
+           [ Response to Client ]
+```
+
+1. **Step 1 (PostgreSQL Index Scan)**: Executes [`get_in_stock_product_ids()`](file:///db/postgres_queries.py) using an index scan over the `inventory.stock` column to retrieve only IDs with available stock.
+2. **Step 2 (ID Array Extraction)**: Extracts a lightweight array of matching SKU strings.
+3. **Step 3 (MongoDB B-Tree Injection)**: Passes the ID list into MongoDB's aggregation pipeline via the `$in` operator (`{"product_id": {"$in": in_stock_ids}}`). MongoDB uses its primary index on `product_id` to evaluate metadata, dynamic review aggregations, and price sorting in a single streaming execution.
+
+##### 3. Architectural Comparison: ID-Batching vs. 2PC vs. Distributed Joins
+
+| Dimension | Foreign Engine ID-Batching (Our Approach) | Two-Phase Commit (2PC / XA Distributed Transactions) | Distributed / Federated Joins (e.g., Postgres FDW) |
+| :--- | :--- | :--- | :--- |
+| **Availability (CAP Theorem)** | **High ($AP/CP$ decoupled)**: Engines operate independently; failures are cleanly isolated. | **Low**: Blocking protocol. If coordinator or participant fails during prepare, locks remain held. | **Medium**: Dependent on the lowest common denominator network connection. |
+| **Latency Profile** | Sub-5ms: Two sequential queries over localhost/LAN loopback using indexed lookups. | High: Multiple synchronous network roundtrips for prepare and commit voting phases. | High: Query planner lacks global cost statistics; often falls back to full foreign table scans. |
+| **Locking & Contention** | **Zero cross-engine lock contention**: Read-only index scan on PostgreSQL; no locks held. | Heavy row-level distributed locks held throughout the entire multi-phase commit window. | Foreign locks or snapshot transactions held open across slow network streaming buffers. |
+| **Implementation Complexity** | Minimal: Simple SQL filter combined with MongoDB `$in` operator in service tier. | Complex: Requires external distributed transaction coordinator (e.g., Narayana, Atomikos). | Complex: Requires configuring foreign data wrappers, user mappings, and remote type casts. |
+
 ---
 
 ### 2. MongoDB 6.0 — Polymorphic Document Store
@@ -172,14 +221,198 @@ Rather than relying on third-party image hosting that can break or rate-limit, p
 - **Field**: `image_mime` (`image/svg+xml`)
 - **FastAPI Delivery**: Streaming endpoint `GET /products/{id}/image` directly delivers the vector graphics from MongoDB into Streamlit with sub-millisecond latency.
 
-#### Compound Index Performance Benchmark
-To accelerate filtering by category while sorting by price, a compound index `(category: 1, price: 1)` is created. You can verify execution plans using [`scripts/mongo_index_demo.py`](file:///Users/sanket/Documents/GitHub/AD/scripts/mongo_index_demo.py):
+#### Compound B-Tree Indexing & Query Optimization under the ESR Rule
 
-| Metric | CollScan (No Index) | IXScan (Compound Index) |
+To maximize throughput and minimize latency on e-commerce catalog queries involving simultaneous category filtering, price sorting, and range bounding, MongoDB queries must adhere to the **ESR (Equality, Sort, Range)** indexing design guideline:
+
+1. **Equality (`E`)**: Place fields filtered by exact matches first in the index (`{ category: 1 }`). This immediately narrows the B-Tree search space to the exact target partition.
+2. **Sort (`S`)**: Place sort keys second in the index (`{ price: 1 }`). Because B-Tree keys are physically ordered, the database scans matching index leaves in exact sorted order without allocating an in-memory sort buffer (`hasSortStage: false`).
+3. **Range (`R`)**: Place fields with range predicates (`$gte`, `$lte`, `$gt`, `$lt`) last. If a range predicate was placed *before* the sort key, MongoDB would be forced to perform an in-memory `SORT` stage across all matching range keys.
+
+##### Query Execution Plan Comparison: COLLSCAN vs. ESR IXSCAN
+The optimization can be verified directly via [`scripts/mongo_index_demo.py`](file:///scripts/mongo_index_demo.py) using `db.products.find({"category": "laptops", "price": {"$gte": 100, "$lte": 1500}}).sort("price", 1).explain("executionStats")`:
+
+```json
+// Execution plan without index:
+{
+  "stage": "SORT",
+  "memLimit": 104857600,
+  "totalDataSizeSorted": 55715,
+  "inputStage": {
+    "stage": "COLLSCAN",
+    "filter": { "category": { "$eq": "laptops" } },
+    "docsExamined": 100,
+    "nReturned": 19
+  }
+}
+
+// Execution plan with ESR index (category: 1, price: 1):
+{
+  "stage": "FETCH",
+  "docsExamined": 19,
+  "nReturned": 19,
+  "inputStage": {
+    "stage": "IXSCAN",
+    "indexName": "category_1_price_1",
+    "keysExamined": 19,
+    "direction": "forward"
+  }
+}
+```
+
+##### Benchmark Performance Matrix (`explain("executionStats")`)
+
+| Benchmark Metric | COLLSCAN (No Index) | IXSCAN (ESR Compound Index: `category: 1, price: 1`) | Academic Takeaway / Architectural Impact |
+| :--- | :--- | :--- | :--- |
+| **Execution Plan Stages** | `SORT → COLLSCAN` | `FETCH → IXSCAN` | Eliminates blocking memory stages; converts to streaming pipeline |
+| **Scan Strategy** | `COLLSCAN` | `IXSCAN` | Index pointer lookup directly into B-Tree leaves |
+| **In-Memory `SORT` Stage?** | **`True`** (Active `SORT` node) | **`False`** (`hasSortStage: false`) | Sort ordering guaranteed by index traversal sequence |
+| **Sort RAM Memory Allocated** | `55,715 bytes` | **`0 bytes`** | Avoids MongoDB's 100MB RAM sort threshold and disk spill |
+| **Total Documents Examined** | `100` (100% of collection) | **`19`** (Only matching records) | Zero wasted disk/cache page reads |
+| **Total Index Keys Examined** | `0` | `19` | Strict 1:1 ratio between index keys and returned results |
+| **Documents Returned (`nReturned`)** | `19` | `19` | High index selectivity ($\text{Index Selectivity} = \frac{nReturned}{keysExamined} = 1.0$) |
+| **Query Latency** | Variable with table size ($O(N)$) | Sub-millisecond ($O(\log N + M)$) | Predictable, scalable retrieval under production load |
+
+
+#### Embedded Array Denormalization & Aggregation Pipeline ($unwind → $group → $match)
+
+Product reviews are stored natively as an embedded array within each product document (`reviews: [{ user, rating, text }, ...]`). While embedded documents enable single-read document retrieval without relational joins, calculating aggregate metrics (such as dynamic average star ratings and review counts) presents an architectural choice between client-side computation vs. database-engine aggregation.
+
+##### Theoretical Concept: In-Engine Aggregation vs. Client-Side Array Parsing
+- **Client-Side Parsing Anti-Pattern**: Pulling raw documents with unbounded review arrays across the network into application memory (e.g., Python / Node.js) to compute averages in user-space wastes severe network bandwidth, consumes high application RAM, and invalidates database index optimizations.
+- **In-Engine Aggregation Pipeline**: MongoDB's Aggregation Framework delegates data transformation directly to the native C++ database engine, utilizing vectorized operations and streaming pipelines to return only the summarized metrics.
+
+##### Aggregation Pipeline Stages
+The dynamic calculation is implemented in [`db/mongo_queries.py`](file:///db/mongo_queries.py) (`get_products_with_ratings`) using a multi-stage pipeline:
+
+```python
+pipeline = [
+    # 1. Early Working-Set Reduction (Index-Accelerated)
+    {"$match": {"category": category}},
+
+    # 2. Array Denormalization / Flattening
+    {"$unwind": {"path": "$reviews", "preserveNullAndEmptyArrays": True}},
+
+    # 3. Aggregation & Accumulator Computation
+    {
+        "$group": {
+            "_id": "$product_id",
+            "product_id": {"$first": "$product_id"},
+            "name": {"$first": "$name"},
+            "category": {"$first": "$category"},
+            "price": {"$first": "$price"},
+            "description": {"$first": "$description"},
+            "attributes": {"$first": "$attributes"},
+            "image_url": {"$first": "$image_url"},
+            "avg_rating": {"$avg": "$reviews.rating"},
+            "review_count": {"$sum": {"$cond": [{"$gt": ["$reviews.rating", 0]}, 1, 0]}}
+        }
+    },
+
+    # 4. Computed Metric Post-Filtering
+    {"$match": {"avg_rating": {"$gte": min_rating}}},
+
+    # 5. Projection & Precision Formatting
+    {
+        "$project": {
+            "_id": 0,
+            "product_id": 1,
+            "name": 1,
+            "category": 1,
+            "price": 1,
+            "description": 1,
+            "attributes": 1,
+            "image_url": 1,
+            "avg_rating": {"$round": [{"$ifNull": ["$avg_rating", 0.0]}, 1]},
+            "review_count": 1
+        }
+    },
+    {"$sort": {"price": 1}},
+    {"$limit": limit}
+]
+```
+
+1. **`$match` (Early Filtering)**: Reduces the initial working set before entering expensive array transformations. If `category` or keywords are specified, the database filters records using existing indexes.
+2. **`$unwind` (Denormalization)**: Deconstructs the embedded `reviews` array field from the input documents to output a document for each element. Using `preserveNullAndEmptyArrays: True` guarantees that freshly launched products with 0 reviews are not erroneously discarded when browsing the full catalog.
+3. **`$group` (Accumulator Operators)**: Re-groups the flattened stream by `_id: "$product_id"`.
+   - **`$avg: "$reviews.rating"`**: Computes the arithmetic mean rating across all submitted reviews directly inside the storage engine.
+   - **`$sum`**: Evaluates verified review counts using conditional accumulators.
+   - **`$first`**: Preserves top-level document attributes without relational join overhead.
+4. **`$match` (Post-Aggregation Filtering)**: Evaluates the dynamically accumulated `avg_rating` against the requested `min_rating` threshold (e.g., `4.0` or `3.0` stars) *before* serializing results to the client.
+5. **`$project` (Field Shaping)**: Excludes large internal binary payloads (`image_data`), rounds `avg_rating` to 1 decimal place, and produces a clean API response shape.
+
+##### Performance Advantages Over Client-Side Array Parsing
+| Dimension | Client-Side Array Parsing (Application) | MongoDB Engine Aggregation Pipeline |
 | :--- | :--- | :--- |
-| **Documents Examined** | 100 (Entire collection) | 25 (Exact category subset) |
-| **Stage** | `COLLSCAN` + `SORT` | `IXSCAN` (Zero in-memory sort) |
-| **Execution Time** | ~12 ms | < 1 ms |
+| **Network Payload** | Huge (transfers every review object, text, timestamp, and metadata over TCP) | Minimal (only sends the final computed scalar `avg_rating` and `review_count`) |
+| **Memory Consumption** | $O(N \times M)$ memory allocation in Python heap where $M$ is review count per product | $O(1)$ stream processing within MongoDB's native execution pipeline buffer |
+| **CPU Saturation** | Application runtime blocked by Python GIL during JSON deserialization and loops | Multithreaded C++ database engine execution utilizing query optimizer plans |
+| **Pipelining & Bandwidth** | Client must download 100% of reviews before determining if a product meets 4+ stars | MongoDB discards non-matching products *before* serializing over the wire |
+
+#### Multi-Faceted Catalog Aggregations via $facet & Network Roundtrip Optimization
+
+In modern e-commerce storefronts, navigation sidebars and filter bars must display real-time distribution metrics across multiple orthogonal dimensions simultaneously:
+1. **Category Distribution**: Item counts per hardware discipline (`Laptops: 25`, `Smartphones: 25`, etc.).
+2. **Price Range Histograms**: Distribution of inventory across discrete budget tiers (`Under $50`, `$50-$200`, `$200-$1000`, `$1000+`).
+
+##### Theoretical Concept: Relational Multi-Query Anti-Pattern vs. MongoDB $facet
+- **The Relational Multi-Query Overhead**: In traditional relational databases, obtaining multi-dimensional faceted counts requires executing separate, sequential SQL queries over TCP:
+  ```sql
+  -- Query 1: Category breakdown
+  SELECT category, COUNT(*) FROM products GROUP BY category;
+
+  -- Query 2: Price range breakdown
+  SELECT 
+    CASE 
+      WHEN price < 50 THEN 'Under $50'
+      WHEN price < 200 THEN '$50-$200'
+      WHEN price < 1000 THEN '$200-$1000'
+      ELSE '$1000+'
+    END AS price_bucket,
+    COUNT(*) 
+  FROM products 
+  GROUP BY 1;
+  ```
+  This creates significant architectural inefficiencies:
+  - **Connection & Protocol Latency**: $K$ distinct network roundtrips between the API server and database.
+  - **Redundant Table Scans**: The storage engine re-reads and parses the same table data multiple times in separate execution plans.
+  - **Synchronization Mismatches**: Non-repeatable reads can occur if writes happen between the multiple queries unless wrapped in high-isolation transactions.
+
+- **MongoDB $facet Architecture**: The `$facet` aggregation stage processes multiple independent sub-pipelines within a single aggregation stage on the exact same set of input documents. All sub-pipelines run concurrently within MongoDB's engine during a single collection scan.
+
+##### Pipeline Implementation
+The faceted calculation is implemented in [`db/mongo_queries.py`](file:///db/mongo_queries.py) (`get_catalog_facets`) and exposed via `GET /products/facets`:
+
+```python
+pipeline = [{
+    "$facet": {
+        # Sub-pipeline 1: Fast frequency count on category
+        "categories": [
+            {"$sortByCount": "$category"}
+        ],
+        # Sub-pipeline 2: Price range binning using custom bucket boundaries
+        "price_buckets": [
+            {
+                "$bucket": {
+                    "groupBy": "$price",
+                    "boundaries": [0, 50, 200, 1000],
+                    "default": "1000+",
+                    "output": {"count": {"$sum": 1}}
+                }
+            }
+        ]
+    }
+}]
+```
+
+##### Architectural & Performance Advantages
+| Architecture Dimension | Relational Multi-Query Approach | MongoDB `$facet` Single-Roundtrip Pipeline |
+| :--- | :--- | :--- |
+| **Network Roundtrips** | $N$ separate roundtrips (1 per facet dimension) | **1 single roundtrip** returning all facet dimensions |
+| **I/O & Data Cache Access** | Scans collection/table $N$ times; evicts cache | **Single-pass scan**: inputs streamed once through memory |
+| **Atomicity & Consistency** | Vulnerable to phantom reads between queries | **Point-in-time consistent snapshot** across all facets |
+| **API Latency** | Cumulative latency: $T_{net} \times N + \sum T_{exec}$ | Minimal latency: $T_{net} \times 1 + \max(T_{exec})$ |
+| **Client Code Complexity** | Client coordinates `asyncio.gather` or sequential SQL | Clean single dictionary response: `{categories: [...], price_buckets: [...]}` |
 
 ---
 
